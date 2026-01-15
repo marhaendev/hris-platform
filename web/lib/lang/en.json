@@ -1,0 +1,997 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "search": "Search",
+        "filter": "Filter",
+        "back": "Back",
+        "detail": "Detail",
+        "status": "Status",
+        "actions": "Actions",
+        "noData": "No data available",
+        "error": "An error occurred",
+        "changeLanguage": "Change Language",
+        "export": "Export Data",
+        "exportAll": "Export All",
+        "downloadCsv": "Download CSV",
+        "downloadExcel": "Download Excel",
+        "viewMore": "View More",
+        "showing": "Showing",
+        "of": "of",
+        "prev": "Previous",
+        "next": "Next",
+        "data": "entries"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "about": "About",
+        "playground": "Playground / Testing",
+        "analytics": "Analytics",
+        "users": "Users",
+        "admin": "Admin",
+        "owner": "Owner",
+        "employees": "Employees",
+        "organization": "Organization",
+        "documents": "Documents",
+        "recruitment": "Recruitment",
+        "jobs": "Jobs",
+        "applicants": "Applicants",
+        "attendance": "Attendance",
+        "shifts": "Shifts & Schedule",
+        "payroll": "Payroll",
+        "payroll_generator": "Auto Payroll",
+        "salary_employee": "Employee Salary",
+        "history": "History",
+        "finance": "Finance",
+        "settings": "Authentication",
+        "whatsapp": "WhatsApp Bot",
+        "help": "Help",
+        "main_menu": "Main Menu",
+        "management": "Management",
+        "activity": "Attendance & Leave",
+        "system": "Settings",
+        "absensi": "Attendance",
+        "leave": "Leave & Permit",
+        "notifications": "Notifications",
+        "activities_settings": "Activities",
+        "master_data": "Master Data",
+        "master_posisi": "Positions",
+        "master_departemen": "Departments",
+        "master_bank": "Banks",
+        "master_payment": "Payment Methods",
+        "companies": "Companies"
+    },
+    "aboutPage": {
+        "title": "About Application",
+        "subtitle": "Information about this application.",
+        "context": {
+            "title": "Technical Test Submission",
+            "subtitle": "PT Citra Borneo Indah - Recruitment",
+            "desc1": "This application was developed as part of the selection process for the position of",
+            "role": "Staff Application Development",
+            "desc2": "This project demonstrates the ability to build a modern, responsive, and scalable",
+            "system": "HRIS (Human Resource Information System)",
+            "desc3": "using the latest web technologies."
+        },
+        "techStack": {
+            "title": "Technology Stack",
+            "frontend": "Frontend",
+            "backend": "Backend & Database"
+        },
+        "candidate": {
+            "title": "Candidate Information",
+            "position": "Position",
+            "subject": "Subject",
+            "assignmentDate": "Assignment Date",
+            "deadline": "Deadlines (7 Working Days)",
+            "submissionDate": "Submission Date"
+        },
+        "quote": "\"Becoming The Best World-Class Plantation Company\"",
+        "requirements": {
+            "title": "Expected Features (Requirements)",
+            "subtitle": "Based on Technical Assessment Document",
+            "list": {
+                "core": {
+                    "title": "Core Functionality",
+                    "items": [
+                        "Login (Admin HR, Employee)",
+                        "Employee Management (Add, List, Edit, Delete)",
+                        "Department & Position Management",
+                        "Attendance (Input & History)",
+                        "Leave (Application & Approval)"
+                    ]
+                },
+                "dashboard": {
+                    "title": "Dashboard",
+                    "items": [
+                        "Total Employees",
+                        "Active Employees Count",
+                        "Attendance/Leave Recap"
+                    ]
+                },
+                "tech": {
+                    "title": "Technical Requirements",
+                    "items": [
+                        "Responsive Frontend (Mobile + Desktop)",
+                        "RESTful API for CRUD operations",
+                        "Authentication (Session/JWT)",
+                        "Server-side Input Validation"
+                    ]
+                },
+                "bonus": {
+                    "title": "Bonus Points (Implemented)",
+                    "items": [
+                        "Search & Filter for Employee List",
+                        "CSV Export for Employees & Attendance",
+                        "Role-Based Access Control (RBAC)"
+                    ]
+                }
+            }
+        },
+        "features": {
+            "title": "Comprehensive Features",
+            "list": {
+                "auth": {
+                    "title": "Authentication & Integration",
+                    "items": [
+                        "Login via Username/Email & Password",
+                        "Secure Session Support using JWT",
+                        "Secure Login with Role-Based Redirection",
+                        "Forgot Password Flow with WhatsApp OTP Verification",
+                        "OTP Login via WhatsApp Bot Integration",
+                        "WhatsApp Bot Management (Connection Status, QR Code, OTP Time Configuration, OTP Template, Delivery Test)"
+                    ]
+                },
+                "dashboard": {
+                    "title": "Dashboard & Analytics",
+                    "items": [
+                        "Real-time Employee Statistics (Total, Active, Departments)",
+                        "Interactive Attendance Chart with Week/Month/Year filters",
+                        "Weekly Aggregation Logic for Month View (Recap Mode)",
+                        "Dynamic Y-Axis Scaling based on data volume",
+                        "Visual Indicators for Late vs On-Time attendance",
+                        "Export Data to CSV (Employees & Attendance Recap)"
+                    ]
+                },
+                "employees": {
+                    "title": "User Management",
+                    "items": [
+                        "Full CRUD Employee Management",
+                        "Role-Based Access Control (Owner, Admin, Employee)",
+                        "Advanced Data Grid (Search, Filter, Pagination, Export)"
+                    ]
+                },
+                "attendance": {
+                    "title": "Attendance System",
+                    "items": [
+                        "Timezone-aware Recording (WIB/Jakarta GMT+7)",
+                        "Automated Lateness Calculation logic",
+                        "Check-In and Check-Out Workflow",
+                        "GPS Location Tracking & Geofencing Support",
+                        "Automated Checkout System",
+                        "Work Schedule Configuration (Entry & Exit Times)",
+                        "Office Location Configuration",
+                        "Advanced Data Grid (Search, Filter, Pagination, Export)",
+                        "Daily, Weekly, and Monthly Attendance History"
+                    ]
+                },
+                "leave": {
+                    "title": "Leave Management",
+                    "items": [
+                        "Comprehensive Leave Types (Annual, Sick, Maternity, etc.)",
+                        "Real-time Quota Tracking (Remaining vs Used)",
+                        "Digital Evidence Attachment Support (PDF/Image)",
+                        "Advanced Data Grid (Search, Filter, Pagination, Export)",
+                        "Approval Workflow (Pending, Approved, Rejected)",
+                        "Leave History"
+                    ]
+                },
+                "payroll": {
+                    "title": "Finance Management",
+                    "items": [
+                        "Set Salary for Each Employee",
+                        "Automated Salary Generation",
+                        "Advanced Data Grid (Search, Filter, Pagination, Export)",
+                        "Payroll History & Reporting"
+                    ]
+                },
+                "organization": {
+                    "title": "Organization (Dept & Position)",
+                    "items": [
+                        "Department Management (CRUD)",
+                        "Position Management (CRUD) with Hierarchical Levels",
+                        "Automatic Position Creation Logic"
+                    ]
+                },
+                "tech": {
+                    "title": "Technical Excellence",
+                    "items": [
+                        "Fully Responsive Design (Mobile/Desktop) with Tailwind CSS",
+                        "Multi-language Support (Indonesian/English) with Context API",
+                        "Skeleton Loading States for better UX",
+                        "Optimized Database Queries with Better-SQLite3 (Native)",
+                        "Modern UI Components using Shadcn/UI & Lucide React"
+                    ]
+                }
+            }
+        }
+    },
+    "dashboard": {
+        "title": "Overview",
+        "subtitle": "Welcome back! Here is the latest HR data overview.",
+        "stats": {
+            "employees": {
+                "title": "Total Employees",
+                "desc": "Active working"
+            },
+            "departments": {
+                "title": "Departments",
+                "active": "Active",
+                "total": "Total"
+            },
+            "positions": {
+                "title": "Positions",
+                "active": "Active",
+                "total": "Total"
+            },
+            "attendance": {
+                "title": "Present Today",
+                "desc": "Employees checked-in"
+            },
+            "payroll": {
+                "title": "Payroll Estimation",
+                "desc": "Total Basic Salary / Month"
+            }
+        },
+        "attendanceChart": {
+            "title": "Attendance Statistics",
+            "desc": "Employee attendance chart.",
+            "placeholder": "Chart will appear here once there is enough attendance data",
+            "rangeWeek": "Week",
+            "rangeMonth": "Month",
+            "rangeYear": "Year"
+        },
+        "attendancePie": {
+            "title": "Attendance Composition",
+            "desc": "Daily attendance summary",
+            "onTime": "On Time",
+            "late": "Late",
+            "absent": "Absent",
+            "total": "Total Users"
+        },
+        "recentEmployees": {
+            "title": "Recent Employees",
+            "subtitle": "last employees joined.",
+            "empty": "No new employees yet.",
+            "noPosition": "No position yet"
+        },
+        "personal": {
+            "attendance": {
+                "title": "Attendance This Month",
+                "desc": "Total attendance this month",
+                "unit": "Days"
+            },
+            "leave": {
+                "title": "Leave Balance",
+                "desc": "Remaining annual leave quota",
+                "unit": "Days"
+            },
+            "status": {
+                "title": "Today's Status",
+                "desc": "Your attendance status today"
+            },
+            "salary": {
+                "title": "Base Salary",
+                "desc": "Your monthly basic salary"
+            },
+            "noData": {
+                "title": "Statistics Not Available",
+                "desc": "Your account is registered as an employee, but employee data was not found. Contact admin to complete your profile."
+            }
+        }
+    },
+    "user": {
+        "addAccount": "Add Account",
+        "logout": "Logout",
+        "profile": "Profile",
+        "adminUser": "Admin User"
+    },
+    "jobs": {
+        "title": "Job Postings",
+        "subtitle": "Manage all job postings.",
+        "searchPlaceholder": "Search jobs...",
+        "allStatus": "All Status",
+        "open": "Open",
+        "closed": "Closed",
+        "draft": "Draft",
+        "noJobs": "No jobs yet.",
+        "noMatch": "No matching jobs found.",
+        "newJob": "New Job",
+        "position": "Position",
+        "location": "Location",
+        "salary": "Salary",
+        "employmentType": "Employment Type",
+        "postedDate": "Posted Date"
+    },
+    "employees": {
+        "title": "Employees",
+        "subtitle": "Manage employee data.",
+        "add": "Add Employee",
+        "listTitle": "Employee List",
+        "searchPlaceholder": "Search name or position...",
+        "table": {
+            "name": "Name & Contact",
+            "role": "Position & Division",
+            "salary": "Basic Salary",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "status": {
+            "active": "Active"
+        },
+        "actions": {
+            "detail": "Detail",
+            "delete": "Delete"
+        },
+        "empty": {
+            "noData": "No employee data yet.",
+            "noMatch": "No employees found matching the search."
+        },
+        "deleteDialog": {
+            "title": "Delete Employee?",
+            "description": "This employee data, including all documents and history, will be permanently deleted.",
+            "confirm": "Yes, Delete"
+        },
+        "toast": {
+            "deleteSuccess": "Employee deleted successfully!"
+        }
+    },
+    "settings": {
+        "title": "Authentication Settings",
+        "subtitle": "Manage system and company configurations.",
+        "save_changes": "Save Changes",
+        "otp_config": "OTP Configuration",
+        "otp_duration": "OTP Duration (Minutes)",
+        "otp_desc": "How long the OTP code is valid before expiring.",
+        "otp_message_template": "OTP Message Template",
+        "otp_message_template_desc": "Use {{code}} as a placeholder for the OTP code.",
+        "test_otp": "Test Send OTP",
+        "test_otp_self": "Test Send to My Number",
+        "jwt_config": "JWT Configuration",
+        "jwt_hours": "Hours",
+        "jwt_minutes": "Minutes",
+        "jwt_desc": "Total session duration is the accumulation of Hours + Minutes.",
+        "company_info": "Company Info",
+        "office_start_time": "Office Start Time",
+        "office_start_time_desc": "Deadline for employees to not be considered late (HH:mm).",
+        "office_end_time": "Office End Time",
+        "office_end_time_desc": "Standard end time for auto check-out (HH:mm).",
+        "enable_auto_checkout": "Enable Auto Check-out",
+        "auto_checkout_desc": "Automatic check-out if employee forgets.",
+        "attendance_radius": "Attendance",
+        "office_lat": "Office Latitude",
+        "office_lng": "Office Longitude",
+        "radius_max": "Maximum Radius (Meters)",
+        "radius_desc": "Maximum distance employees can take attendance from the office. (0 = Free)",
+        "get_current_loc": "Get Current Office Location"
+    },
+    "time": {
+        "justNow": "Just now",
+        "minutesAgo": "minutes ago",
+        "hoursAgo": "hours ago",
+        "daysAgo": "days ago",
+        "weeksAgo": "weeks ago",
+        "monthsAgo": "months ago",
+        "yearsAgo": "years ago",
+        "dateNotAvailable": "Date not available",
+        "invalidDate": "Invalid date"
+    },
+    "landing": {
+        "nav": {
+            "features": "Features",
+            "pricing": "Pricing",
+            "faq": "FAQ",
+            "login": "Login",
+            "register": "Start Free"
+        },
+        "hero": {
+            "badge": "👋 Hello HR! Manage teams easier & fun",
+            "title": "Manage HR Administration \nMore Practical & Efficient",
+            "description": "No more headaches with manual attendance, leave & payroll. HRIS makes HR work automated, tidy, and enjoyable.",
+            "cta_primary": "Try Free Now",
+            "cta_secondary": "View Product Demo",
+            "dashboard_mockup": {
+                "balance": "Reimbursement Balance",
+                "employee": "Active Employees",
+                "attendance": "Today's Attendance",
+                "hiring": "Open Hiring"
+            }
+        },
+        "features": {
+            "title": "Modern & Comprehensive Features",
+            "subtitle": "Integrated platform for efficient HR management.",
+            "employees": {
+                "title": "Employee Management",
+                "desc": "Manage employee data with advanced search, filtering, and data export capabilities."
+            },
+            "attendance": {
+                "title": "Geofencing Attendance",
+                "desc": "Location-based attendance recording with GPS and automatic lateness calculation logic."
+            },
+            "payroll": {
+                "title": "Automated Payroll",
+                "desc": "Automatic salary generator for all employees with data export and payroll history."
+            },
+            "leave": {
+                "title": "Leave & Permit",
+                "desc": "Real-time leave quota tracking with a transparent submission and approval workflow."
+            },
+            "dashboard": {
+                "title": "Analytics Dashboard",
+                "desc": "Monitor active employees, attendance statistics, and charts in real-time."
+            },
+            "whatsapp": {
+                "title": "WhatsApp Integration",
+                "desc": "Secure Login support using OTP codes sent directly via WhatsApp Bot."
+            }
+        },
+        "pricing": {
+            "title": "Best Pricing Plans",
+            "subtitle": "Choose a plan that fits your company's growth phase. Transparent, no hidden fees.",
+            "monthly": "/month",
+            "compare_all": "Compare All Features",
+            "starter": {
+                "title": "Starter",
+                "price": "Free",
+                "desc": "For MSMEs starting to tidy up administration.",
+                "cta": "Register Now",
+                "features": [
+                    "Max 5 Employees",
+                    "Mobile Attendance",
+                    "Basic Payroll",
+                    "Monthly Reports"
+                ]
+            },
+            "growth": {
+                "title": "Growth",
+                "price": "999.000",
+                "desc": "Suitable for growing teams needing efficiency.",
+                "cta": "Select Plan",
+                "features": [
+                    "All Starter features, plus:",
+                    "Max 50 Employees",
+                    "Export Reports",
+                    "Shift Management",
+                    "Support via Email"
+                ]
+            },
+            "pro": {
+                "title": "Pro",
+                "price": "2.499.000",
+                "desc": "Scale up. Complete solution for companies with large teams.",
+                "cta": "Try Free 14 Days",
+                "features": [
+                    "All Growth features, plus:",
+                    "Max 200 Employees",
+                    "Priority Support 24/7",
+                    "Custom Domain"
+                ]
+            },
+            "enterprise": {
+                "title": "Enterprise",
+                "price": "Contact Us",
+                "desc": "Self-hosted / On-Premise Solution. Pay once forever.",
+                "cta": "Contact Sales",
+                "features": [
+                    "Install on Own Server",
+                    "White Label (Your Logo)",
+                    "1 Year Free Updates"
+                ]
+            }
+        },
+        "about": {
+            "title": "About Us",
+            "subtitle": "Building the future of efficient and transparent HR management.",
+            "mission_title": "Our Mission",
+            "mission_desc": "Helping Indonesian companies grow faster with smart and easy-to-use HR administration automation.",
+            "story_title": "Our Story",
+            "story_desc": "Started from internal needs, now grown into a solution trusted by many companies.",
+            "contact_title": "Contact Us",
+            "contact_desc": "Have questions or need help? We are ready to assist you."
+        },
+        "faq": {
+            "title": "General FAQ",
+            "subtitle": "Answers to questions we receive most often.",
+            "view_all": "View All Questions"
+        },
+        "footer": {
+            "desc": "HR management platform helping Indonesian companies grow faster with smart administration automation.",
+            "copyright": "HRIS Systems",
+            "created_by": "Created by",
+            "rights": "All rights reserved.",
+            "privacy": "Privacy Policy",
+            "terms": "Terms of Service",
+            "product_title": "Product",
+            "company_title": "Company",
+            "support_title": "Pages",
+            "about": "About Us",
+            "careers": "Careers",
+            "contact": "Contact"
+        }
+    },
+    "profile": {
+        "title": "Profile",
+        "subtitle": "Manage your personal information and account security.",
+        "success": "Profile updated successfully!",
+        "errorFetch": "Failed to fetch profile data",
+        "validationError": "Please correct the errors on the form",
+        "tabs": {
+            "account": "Account",
+            "security": "Change Password",
+            "job": "Job Info"
+        },
+        "edit": "Edit Profile",
+        "personal": {
+            "title": "Personal Data",
+            "subtitle": "Basic information about your account.",
+            "username": "Username",
+            "fullName": "Full Name",
+            "email": "Email Address",
+            "phone": "WhatsApp / Phone Number",
+            "placeholder": {
+                "username": "username",
+                "name": "Your Name",
+                "email": "email@company.com",
+                "phone": "0812..."
+            },
+            "usernameAvailable": "Username available!",
+            "usernameTaken": "Username already taken",
+            "usernameCheckError": "Failed to check username",
+            "usernameHint": "Min 3 characters, no spaces",
+            "emailAvailable": "Email available!",
+            "emailTaken": "Email already used",
+            "emailCheckError": "Failed to check email",
+            "emailHint": "Use a valid company email",
+            "phoneAvailable": "WhatsApp number available!",
+            "phoneTaken": "Number already registered",
+            "phoneCheckError": "Failed to check number",
+            "phoneHint": "Use Indonesian phone number format"
+        },
+        "job": {
+            "title": "Job Information",
+            "subtitle": "Details of your position and work policies.",
+            "position": "Position / Role",
+            "department": "Department",
+            "quotaTitle": "Annual Leave Statistics",
+            "annualBalance": "Annual Balance",
+            "usedLeave": "Used Leave",
+            "remaining": "Remaining",
+            "days": "days"
+        },
+        "security": {
+            "title": "Security",
+            "subtitle": "Change your account password regularly.",
+            "newPassword": "New Password",
+            "confirmPassword": "Confirm Password",
+            "update": "Update Password"
+        },
+        "otp": {
+            "title": "Verify New Number",
+            "desc": "We have sent an OTP code to WhatsApp",
+            "inputLabel": "OTP Code",
+            "resend": "Resend Code",
+            "verifying": "Sending...",
+            "verify": "Verify & Save"
+        }
+    },
+    "notification_mgmt": {
+        "title": "Notification Management",
+        "subtitle": "Manage announcements",
+        "add": "Add Notification",
+        "form": {
+            "titleNew": "Create New Notification",
+            "titleEdit": "Edit Notification",
+            "desc": "Enter notification details to be displayed to users.",
+            "fields": {
+                "title": "Title",
+                "message": "Message",
+                "type": "Display Type",
+                "category": "Category",
+                "destination": "Target Page",
+                "targetRole": "Target Role",
+                "status": "Status"
+            },
+            "placeholders": {
+                "title": "Example: System Maintenance Tomorrow",
+                "message": "Enter notification message in detail...",
+                "destination": "Select Page"
+            },
+            "types": {
+                "info": "Information (Blue)",
+                "warning": "Warning (Yellow)",
+                "success": "Success (Green)"
+            },
+            "categories": {
+                "general": "General",
+                "system": "System",
+                "wa": "WhatsApp"
+            }
+        },
+        "table": {
+            "header": {
+                "content": "Title & Message",
+                "category": "Category",
+                "target": "Target",
+                "status": "Status",
+                "actions": "Actions"
+            },
+            "empty": "No notifications yet",
+            "emptyDesc": "Create your first notification to greet the team."
+        }
+    },
+    "activity_settings": {
+        "title": "Activities",
+        "subtitle": "Manage attendance parameters and company leave policies.",
+        "attendance": {
+            "title": "Attendance Policy",
+            "desc": "Set working hours, office location, and attendance tolerance.",
+            "work_hours": "Working Hours",
+            "office_location": "Office Location",
+            "radius_config": "Radius Configuration"
+        },
+        "leave": {
+            "title": "Leave Policy",
+            "desc": "Manage annual leave quotas and other rules.",
+            "annual_quota": "Annual Leave Quota (Days)",
+            "quota_desc": "Standard amount of annual leave given to new employees.",
+            "min_notice": "Minimum Notice (Days)",
+            "min_notice_desc": "Minimum number of days before the leave date to apply."
+        },
+        "real_time": {
+            "new_leave_toast": "New leave request submitted!",
+            "new_leave_desc": "Please check the notification panel or leave page.",
+            "pending_summary": "There are {count} leave requests pending approval.",
+            "pending_title": "Pending Leave Requests"
+        }
+    },
+    "leave_mgmt": {
+        "title": "Leave & Permit",
+        "subtitle": "Manage employee leave requests",
+        "form": {
+            "title": "New Leave Request",
+            "desc": "Fill the form to request leave",
+            "type": "Leave Type",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "reason": "Reason",
+            "reasonPlaceholder": "e.g., Family event",
+            "submit": "Submit Request",
+            "submitting": "Submitting...",
+            "success": "Leave request submitted successfully",
+            "error": "Failed to submit leave request"
+        },
+        "list": {
+            "titleAdmin": "Incoming Leave Requests",
+            "titleUser": "My Leave History",
+            "empty": "No leave data available.",
+            "action": {
+                "approve": "Approve",
+                "reject": "Reject",
+                "success": "Leave {action} successfully",
+                "error": "Failed to process"
+            }
+        },
+        "types": {
+            "ANNUAL": "Annual Leave",
+            "annual": "Annual Leave",
+            "SICK": "Sick Leave",
+            "sick": "Sick Leave",
+            "UNPAID": "Unpaid Leave",
+            "unpaid": "Unpaid Leave",
+            "EMERGENCY": "Emergency Leave",
+            "emergency": "Emergency Leave",
+            "MATERNITY": "Maternity Leave",
+            "maternity": "Maternity Leave",
+            "MARRIAGE": "Marriage Leave",
+            "marriage": "Marriage Leave",
+            "BEREAVEMENT": "Bereavement Leave",
+            "bereavement": "Bereavement Leave",
+            "DUTY": "Duty Trip",
+            "duty": "Duty Trip",
+            "OTHER": "Other",
+            "other": "Other"
+        },
+        "status": {
+            "PENDING": "Pending",
+            "APPROVED": "Approved",
+            "REJECTED": "Rejected"
+        }
+    },
+    "userDetail": {
+        "admin": {
+            "title": "Administrator",
+            "notFound": "Admin not found."
+        },
+        "employee": {
+            "title": "Employee",
+            "notFound": "Employee not found."
+        },
+        "tabs": {
+            "profile": "Account Profile",
+            "profileEmployee": "Personal Profile",
+            "activity": "Activity",
+            "documents": "Documents & Archive"
+        },
+        "profile": {
+            "title": "Admin Information",
+            "titleEmployee": "Employee Information",
+            "subtitle": "Administrator profile details.",
+            "subtitleEmployee": "Employee data details.",
+            "fullName": "Full Name",
+            "email": "Login Email",
+            "emailEmployee": "Email Address",
+            "role": "Role",
+            "position": "Position",
+            "department": "Department",
+            "baseSalary": "Base Salary",
+            "joinDate": "Join Date",
+            "registeredSince": "Registered Since"
+        },
+        "documents": {
+            "title": "Employee Documents",
+            "subtitle": "Upload ID Card, Contract, or other documents.",
+            "uploadTitle": "Upload New Document",
+            "documentName": "Document Name (e.g. ID Card)",
+            "documentType": "Document Type",
+            "types": {
+                "ktp": "ID Card / Identity",
+                "contract": "Employment Contract",
+                "cv": "CV / Resume",
+                "others": "Others"
+            },
+            "uploading": "Uploading...",
+            "uploadSuccess": "Upload Successful!",
+            "uploadFailed": "Upload Failed",
+            "empty": "No documents uploaded yet."
+        },
+        "activity": {
+            "title": "Activity Log",
+            "subtitle": "Activity history of this account.",
+            "subtitleEmployee": "Activity history of this employee.",
+            "deleteAll": "Delete All",
+            "empty": "No activity data recorded yet.",
+            "page": "Page",
+            "of": "of",
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "actions": {
+            "editProfile": "Edit Profile",
+            "save": "Save"
+        },
+        "dialog": {
+            "deleteTitle": "Confirm Deletion",
+            "deleteSingle": "Are you sure you want to delete this activity log?",
+            "deleteAll": "Are you sure you want to delete ALL activity logs for this user? This action cannot be undone.",
+            "cancel": "Cancel",
+            "delete": "Delete"
+        },
+        "toast": {
+            "logDeleted": "Log deleted successfully",
+            "logsDeleted": "Successfully deleted {count} activity logs.",
+            "deleteFailed": "Failed to delete log",
+            "error": "An error occurred"
+        }
+    },
+    "organization": {
+        "title": "Departments",
+        "subtitle": "Manage Departments and Positions.",
+        "search": "Search departments...",
+        "addButton": "Add",
+        "empty": {
+            "noMatch": "No matching departments.",
+            "noData": "No departments created yet."
+        },
+        "tooltip": {
+            "edit": "Edit / Detail",
+            "delete": "Delete Department"
+        },
+        "confirmDelete": {
+            "title": "Delete Department?",
+            "description": "This department will be deleted along with all positions in it. This action cannot be undone.",
+            "confirm": "Yes, Delete"
+        },
+        "toast": {
+            "deleteSuccess": "Department deleted successfully!",
+            "saveSuccess": "Department saved successfully!",
+            "updateSuccess": "Changes saved",
+            "saveFailed": "Failed to save department",
+            "updateFailed": "Failed to save",
+            "notFound": "Department not found",
+            "fillData": "Please complete the data",
+            "error": "An error occurred",
+            "positionDeleteSuccess": "Position deleted successfully!"
+        },
+        "new": {
+            "title": "Add New Department",
+            "subtitle": "Choose from standard list or create a new department.",
+            "nameLabel": "Department Name",
+            "namePlaceholder": "Select or type department name...",
+            "searchPlaceholder": "Search or create new...",
+            "createNew": "Create new (Type and press Enter)",
+            "suggestions": "Department Suggestions",
+            "hint": "If not in the list, type manually below.",
+            "customPlaceholder": "Or type custom name...",
+            "back": "Back",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "edit": {
+            "title": "Edit Department",
+            "subtitle": "Change department information.",
+            "nameLabel": "Department Name",
+            "codeLabel": "Department Code",
+            "saveButton": "Save Changes",
+            "positionsTitle": "Positions",
+            "addPosition": "Add Position",
+            "positionsSubtitle": "List of positions in this department.",
+            "noPositions": "No positions yet.",
+            "loading": "Loading...",
+            "back": "Back"
+        },
+        "position": {
+            "confirmDelete": {
+                "title": "Delete Position?",
+                "description": "This position will be permanently deleted from the department."
+            },
+            "new": {
+                "title": "Add New Position",
+                "subtitle": "Choose standard position or create custom for department",
+                "nameLabel": "Position Name",
+                "namePlaceholder": "Select position...",
+                "searchPlaceholder": "Search position in core database...",
+                "notFound": "Position not found in core database using query.",
+                "suggestions": "Suggestions from Core Database",
+                "customPlaceholder": "Or type custom position name...",
+                "levelLabel": "Level",
+                "back": "Back",
+                "cancel": "Cancel",
+                "save": "Save",
+                "toast": {
+                    "fillTitle": "Please fill in position name",
+                    "saveSuccess": "Position saved successfully!",
+                    "saveFailed": "Failed to save position",
+                    "error": "An error occurred",
+                    "updateSuccess": "Position updated successfully!",
+                    "updateFailed": "Failed to update position"
+                }
+            },
+            "edit": {
+                "title": "Edit Position",
+                "subtitle": "Change position information.",
+                "titleLabel": "Position Name",
+                "levelLabel": "Level",
+                "saveButton": "Save Changes",
+                "back": "Back",
+                "loading": "Loading..."
+            }
+        },
+        "pagination": {
+            "showing": "Showing",
+            "of": "of",
+            "departments": "departments",
+            "positions": "positions",
+            "previous": "Previous",
+            "next": "Next",
+            "page": "Page"
+        },
+        "company": {
+            "title": "Company",
+            "subtitleSuper": "Manage all tenant companies (SaaS).",
+            "subtitleOwner": "Manage your company information.",
+            "add": "Add Company",
+            "searchPlaceholder": "Search companies...",
+            "table": {
+                "name": "Company Name",
+                "owner": "Owner",
+                "contact": "Contact",
+                "totalEmployee": "Total Employees",
+                "plan": "Plan",
+                "actions": "Actions"
+            },
+            "form": {
+                "titleNew": "New Company Registration",
+                "titleEdit": "Company Details & Info",
+                "name": "Company Name",
+                "namePlaceholder": "PT Maju Jaya",
+                "plan": "Subscription Plan",
+                "ownerPassword": "Owner Password",
+                "ownerName": "Owner Name",
+                "ownerEmail": "Owner Email",
+                "address": "Address",
+                "addressPlaceholder": "Jl. Sudirman No. 123",
+                "website": "Website",
+                "websitePlaceholder": "https://company.com",
+                "phone": "Phone",
+                "phonePlaceholder": "021-xxxx",
+                "whatsapp": "WhatsApp",
+                "whatsappPlaceholder": "0812-xxxx",
+                "email": "Company Email",
+                "emailPlaceholder": "info@company.com",
+                "billingHint": "* Only Superadmin can change the subscription plan.",
+                "tabs": {
+                    "info": "Basic Info",
+                    "contact": "Contact",
+                    "billing": "Plan & Billing"
+                }
+            },
+            "toast": {
+                "createSuccess": "Company created successfully!",
+                "createFailed": "Failed to create company",
+                "updateSuccess": "Company information updated successfully!",
+                "updateFailed": "Failed to update company",
+                "deleteSuccess": "Company deleted successfully!",
+                "deleteFailed": "Failed to delete company"
+            },
+            "dialog": {
+                "deleteTitle": "Delete Company?",
+                "deleteDesc": "This company and all associated employees, departments, and documents will be permanently deleted.",
+                "deleteConfirm": "Yes, Delete Everything"
+            }
+        }
+    },
+    "whatsapp_mgmt": {
+        "title": "WhatsApp Integration",
+        "subtitle": "Manage WhatsApp bot connection for automated notifications.",
+        "manage_bot": "Bot Management (Superadmin)",
+        "connection_status": "Connection Status",
+        "connect_type": {
+            "private": "Private Connection (QR)",
+            "shared": "Use System Bot"
+        },
+        "not_connected": "WhatsApp Not Connected",
+        "connect_desc": "Connect your company WhatsApp to send automated notifications & OTP.",
+        "connect_btn": "Connect WhatsApp",
+        "scan_qr": "Scan QR Code",
+        "scan_instruction": "Open WhatsApp on your phone > Menu > Linked Devices > Link a Device",
+        "status": {
+            "connected": "CONNECTED",
+            "disconnected": "DISCONNECTED",
+            "ready": "Ready to send messages",
+            "system_infra": "Using system infrastructure"
+        },
+        "action": {
+            "unlink_bot": "Release Bot",
+            "disconnect": "Disconnect",
+            "unlink_title": "Release System Bot?",
+            "disconnect_title": "Disconnect?",
+            "unlink_desc": "You will release the system bot usage. You can switch to private connection anytime.",
+            "disconnect_desc": "The bot will not be able to send messages until you reconnect it.",
+            "unlink_confirm": "Yes, Release",
+            "disconnect_confirm": "Yes, Disconnect"
+        },
+        "test": {
+            "title": "Test Send Message",
+            "recipient": "Target Number",
+            "select_contact": "Select Contact",
+            "quick_contact": "Quick Contacts",
+            "me": "Me",
+            "developer": "Developer",
+            "message_body": "Message Body",
+            "fill_template": "Fill Template",
+            "send": "Send",
+            "default_msg": "Hello! This is a test message from HRIS."
+        },
+        "logs": "System Logs",
+        "shared": {
+            "available": "System Bots Available",
+            "desc": "Select one of the system-provided bots.",
+            "empty": "No system bots available.",
+            "select": "Select Bot"
+        }
+    }
+}

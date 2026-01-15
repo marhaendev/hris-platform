@@ -1,0 +1,995 @@
+{
+    "common": {
+        "loading": "Memuat...",
+        "save": "Simpan",
+        "cancel": "Batal",
+        "delete": "Hapus",
+        "edit": "Edit",
+        "add": "Tambah",
+        "search": "Cari",
+        "filter": "Filter",
+        "back": "Kembali",
+        "detail": "Detail",
+        "status": "Status",
+        "actions": "Aksi",
+        "noData": "Tidak ada data",
+        "error": "Terjadi kesalahan",
+        "changeLanguage": "Ganti Bahasa",
+        "export": "Ekspor Data",
+        "exportAll": "Ekspor Semua",
+        "downloadCsv": "Download CSV",
+        "downloadExcel": "Download Excel",
+        "viewMore": "Lihat Lainnya",
+        "showing": "Menampilkan",
+        "of": "dari",
+        "prev": "Sebelumnya",
+        "next": "Selanjutnya",
+        "data": "data"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "about": "Tentang",
+        "playground": "Playground / Pengujian",
+        "analytics": "Analitik",
+        "users": "Pengguna",
+        "admin": "Admin",
+        "owner": "Owner",
+        "employees": "Karyawan",
+        "organization": "Organisasi",
+        "documents": "Dokumen",
+        "recruitment": "Rekrutmen",
+        "jobs": "Lowongan",
+        "applicants": "Pelamar",
+        "attendance": "Kehadiran",
+        "shifts": "Shift & Jadwal",
+        "payroll": "Penggajian",
+        "payroll_generator": "Penggajian Otomatis",
+        "salary_employee": "Gaji Karyawan",
+        "history": "Riwayat",
+        "finance": "Keuangan",
+        "settings": "Autentikasi",
+        "whatsapp": "WhatsApp Bot",
+        "help": "Bantuan",
+        "main_menu": "Menu Utama",
+        "management": "Manajemen",
+        "activity": "Kehadiran",
+        "system": "Pengaturan",
+        "absensi": "Absensi",
+        "leave": "Cuti & Izin",
+        "notifications": "Notifikasi",
+        "activities_settings": "Aktivitas",
+        "master_data": "Data Master",
+        "master_posisi": "Posisi",
+        "master_departemen": "Departemen",
+        "master_bank": "Bank",
+        "master_payment": "Metode Bayar",
+        "companies": "Perusahaan"
+    },
+    "aboutPage": {
+        "title": "Tentang Aplikasi",
+        "subtitle": "Informasi mengenai aplikasi ini.",
+        "context": {
+            "title": "Submission Test Teknis",
+            "subtitle": "PT Citra Borneo Indah - Recruitment",
+            "desc1": "Aplikasi ini dikembangkan sebagai bagian dari proses seleksi untuk posisi",
+            "role": "Staff Application Development",
+            "desc2": "Proyek ini mendemonstrasikan kemampuan dalam membangun sistem",
+            "system": "HRIS (Human Resource Information System)",
+            "desc3": "yang modern, responsif, dan skalabel menggunakan teknologi web terkini."
+        },
+        "techStack": {
+            "title": "Stack Teknologi",
+            "frontend": "Frontend",
+            "backend": "Backend & Database"
+        },
+        "candidate": {
+            "title": "Informasi Kandidat",
+            "position": "Posisi",
+            "subject": "Subjek",
+            "assignmentDate": "Tanggal Tugas",
+            "deadline": "Batas Waktu (7 Hari Kerja)",
+            "submissionDate": "Tanggal Pengumpulan"
+        },
+        "quote": "\"Becoming The Best World-Class Plantation Company\"",
+        "requirements": {
+            "title": "Fitur yang Diharapkan (Requirements)",
+            "subtitle": "Berdasarkan Dokumen Tes Teknis",
+            "list": {
+                "core": {
+                    "title": "Fungsionalitas Utama",
+                    "items": [
+                        "Login (Admin HR, Karyawan)",
+                        "Manajemen Karyawan (Tambah, List, Edit, Hapus)",
+                        "Manajemen Departemen & Jabatan",
+                        "Absensi (Input & Riwayat)",
+                        "Cuti (Pengajuan & Persetujuan)"
+                    ]
+                },
+                "dashboard": {
+                    "title": "Dashboard",
+                    "items": [
+                        "Total Karyawan",
+                        "Jumlah Karyawan Aktif",
+                        "Rekap Absensi/Cuti"
+                    ]
+                },
+                "tech": {
+                    "title": "Persyaratan Teknis",
+                    "items": [
+                        "Frontend Responsif (Mobile + Desktop)",
+                        "RESTful API untuk operasi CRUD",
+                        "Autentikasi (Session/JWT)",
+                        "Validasi Input di sisi Server"
+                    ]
+                },
+                "bonus": {
+                    "title": "Nilai Tambah (Diimplementasikan)",
+                    "items": [
+                        "Pencarian & Filter Daftar Karyawan",
+                        "Ekspor CSV untuk Karyawan & Absensi",
+                        "Role-Based Access Control (RBAC)"
+                    ]
+                }
+            }
+        },
+        "features": {
+            "title": "Fitur Lengkap Aplikasi",
+            "list": {
+                "auth": {
+                    "title": "Autentikasi & Integrasi",
+                    "items": [
+                        "Login via Username/Email & Password",
+                        "Mendukung Sesi Aman menggunakan JWT",
+                        "Login Aman dengan Redirection per Role",
+                        "Alur Lupa Password dengan Verifikasi OTP WhatsApp",
+                        "Login OTP via Integrasi WhatsApp Bot",
+                        "Manajemen WhatsApp Bot (Status Koneksi, QR Code, Konfigurasi Waktu OTP, Template OTP, Tes Pengiriman)"
+                    ]
+                },
+                "dashboard": {
+                    "title": "Dashboard & Analitik",
+                    "items": [
+                        "Statistik Karyawan Real-time (Total, Aktif, Departemen)",
+                        "Grafik Absensi Interaktif dengan filter Minggu/Bulan/Tahun",
+                        "Logika Agregasi Mingguan untuk Tampilan Bulan (Mode Rekap)",
+                        "Penskalaan Sumbu Y Dinamis berdasarkan volume data",
+                        "Indikator Visual untuk keterlambatan vs tepat waktu",
+                        "Ekspor Data ke CSV (Karyawan & Rekap Absensi)"
+                    ]
+                },
+                "employees": {
+                    "title": "Manajemen Pengguna",
+                    "items": [
+                        "Manajemen Karyawan Full CRUD",
+                        "Role-Based Access Control (Owner, Admin, Karyawan)",
+                        "Manajemen Data (Pencarian, Filter, Pagination, Ekspor)"
+                    ]
+                },
+                "attendance": {
+                    "title": "Sistem Absensi",
+                    "items": [
+                        "Pencatatan Waktu Timezone-aware (WIB/Jakarta GMT+7)",
+                        "Logika Perhitungan Keterlambatan Otomatis",
+                        "Alur Kerja Check-In dan Check-Out",
+                        "Pelacakan Lokasi GPS & Dukungan Geofencing",
+                        "Sistem Checkout Otomatis",
+                        "Konfigurasi Jadwal Kerja (Jam Masuk & Pulang)",
+                        "Konfigurasi Lokasi Kantor",
+                        "Manajemen Data (Pencarian, Filter, Pagination, Ekspor)",
+                        "Riwayat Absensi Harian, Mingguan, dan Bulanan"
+                    ]
+                },
+                "leave": {
+                    "title": "Manajemen Cuti & Izin",
+                    "items": [
+                        "Tipe Cuti Lengkap (Tahunan, Sakit, Melahirkan, dll)",
+                        "Pelacakan Kuota Real-time (Sisa vs Terpakai)",
+                        "Dukungan Lampiran Bukti Digital (PDF/Gambar)",
+                        "Manajemen Data (Pencarian, Filter, Pagination, Ekspor)",
+                        "Alur Persetujuan (Menunggu, Disetujui, Ditolak)",
+                        "Riwayat Pengajuan"
+                    ]
+                },
+                "payroll": {
+                    "title": "Manajemen Keuangan",
+                    "items": [
+                        "Atur Gaji Setiap Karyawan",
+                        "Generator Gaji Otomatis",
+                        "Manajemen Data (Pencarian, Filter, Pagination, Ekspor)",
+                        "Riwayat & Laporan Penggajian"
+                    ]
+                },
+                "organization": {
+                    "title": "Organisasi (Dept & Posisi)",
+                    "items": [
+                        "Manajemen Departemen (CRUD)",
+                        "Manajemen Posisi (CRUD) dengan Level Hirarki",
+                        "Logika Pembuatan Posisi Otomatis"
+                    ]
+                },
+                "tech": {
+                    "title": "Keunggulan Teknis",
+                    "items": [
+                        "Desain Responsif Sepenuhnya (Mobile/Desktop) dengan Tailwind CSS",
+                        "Dukungan Multi-bahasa (Indonesia/Inggris) dengan Context API",
+                        "Skeleton Loading States untuk UX yang lebih baik",
+                        "Query Database Teroptimasi dengan Better-SQLite3 (Native)",
+                        "Komponen UI Modern menggunakan Shadcn/UI & Lucide React"
+                    ]
+                }
+            }
+        }
+    },
+    "dashboard": {
+        "title": "Ringkasan",
+        "subtitle": "Selamat datang kembali! Berikut overview data SDM terkini.",
+        "stats": {
+            "employees": {
+                "title": "Total Karyawan",
+                "desc": "Aktif bekerja"
+            },
+            "departments": {
+                "title": "Departemen",
+                "active": "Aktif",
+                "total": "Total"
+            },
+            "positions": {
+                "title": "Posisi",
+                "active": "Aktif",
+                "total": "Total"
+            },
+            "attendance": {
+                "title": "Hadir Hari Ini",
+                "desc": "Karyawan check-in"
+            },
+            "payroll": {
+                "title": "Estimasi Payroll",
+                "desc": "Total Gaji Pokok / Bulan"
+            }
+        },
+        "attendanceChart": {
+            "title": "Statistik Kehadiran",
+            "desc": "Grafik kehadiran karyawan.",
+            "placeholder": "Grafik akan tampil disini saat data absensi cukup",
+            "rangeWeek": "Seminggu",
+            "rangeMonth": "Sebulan",
+            "rangeYear": "Setahun"
+        },
+        "attendancePie": {
+            "title": "Komposisi Kehadiran",
+            "desc": "Rangkuman absensi hari ini",
+            "onTime": "Tepat Waktu",
+            "late": "Terlambat",
+            "absent": "Tidak Hadir",
+            "total": "Total User"
+        },
+        "recentEmployees": {
+            "title": "Karyawan Terbaru",
+            "subtitle": "karyawan terakhir bergabung.",
+            "empty": "Belum ada karyawan baru.",
+            "noPosition": "Belum ada posisi"
+        },
+        "personal": {
+            "attendance": {
+                "title": "Kehadiran Bulan Ini",
+                "desc": "Total kehadiran bulan ini",
+                "unit": "Hari"
+            },
+            "leave": {
+                "title": "Sisa Cuti",
+                "desc": "Sisa jatah cuti tahunan",
+                "unit": "Hari"
+            },
+            "status": {
+                "title": "Status Hari Ini",
+                "desc": "Status absensi Anda hari ini"
+            },
+            "salary": {
+                "title": "Gaji Pokok",
+                "desc": "Gaji pokok bulanan Anda"
+            },
+            "noData": {
+                "title": "Data Statistik Tidak Tersedia",
+                "desc": "Akun Anda terdaftar sebagai karyawan, tetapi data kepegawaian tidak ditemukan. Hubungi admin untuk melengkapi profil Anda."
+            }
+        }
+    },
+    "user": {
+        "addAccount": "Tambah Akun",
+        "logout": "Logout",
+        "profile": "Profil",
+        "adminUser": "Admin User"
+    },
+    "jobs": {
+        "title": "Lowongan Pekerjaan",
+        "subtitle": "Kelola semua lowongan pekerjaan.",
+        "searchPlaceholder": "Cari lowongan...",
+        "allStatus": "Semua Status",
+        "open": "Open",
+        "closed": "Closed",
+        "draft": "Draft",
+        "noJobs": "Belum ada lowongan.",
+        "noMatch": "Tidak ada lowongan yang cocok.",
+        "newJob": "Lowongan Baru",
+        "position": "Posisi",
+        "location": "Lokasi",
+        "salary": "Gaji",
+        "employmentType": "Tipe Pekerjaan",
+        "postedDate": "Tanggal Posting"
+    },
+    "employees": {
+        "title": "Karyawan",
+        "subtitle": "Kelola data karyawan.",
+        "add": "Tambah Karyawan",
+        "listTitle": "Daftar Karyawan",
+        "searchPlaceholder": "Cari nama atau posisi...",
+        "table": {
+            "name": "Nama & Kontak",
+            "role": "Jabatan & Divisi",
+            "salary": "Gaji Pokok",
+            "status": "Status",
+            "actions": "Aksi"
+        },
+        "status": {
+            "active": "Aktif"
+        },
+        "actions": {
+            "detail": "Detail",
+            "delete": "Hapus"
+        },
+        "empty": {
+            "noData": "Belum ada data karyawan.",
+            "noMatch": "Tidak ditemukan karyawan dengan kata kunci tersebut."
+        },
+        "deleteDialog": {
+            "title": "Hapus Karyawan?",
+            "description": "Data karyawan ini akan dihapus secara permanen termasuk semua dokumen dan riwayat terkait.",
+            "confirm": "Ya, Hapus"
+        },
+        "toast": {
+            "deleteSuccess": "Karyawan berhasil dihapus!"
+        }
+    },
+    "settings": {
+        "title": "Pengaturan Autentikasi",
+        "subtitle": "Kelola konfigurasi sistem dan perusahaan.",
+        "save_changes": "Simpan Perubahan",
+        "otp_config": "Konfigurasi OTP",
+        "otp_duration": "Durasi OTP (Menit)",
+        "otp_desc": "Berapa lama kode OTP berlaku sebelum kadaluarsa.",
+        "otp_message_template": "Template Pesan OTP",
+        "otp_message_template_desc": "Gunakan {{code}} sebagai pengganti kode OTP.",
+        "test_otp": "Tes Kirim OTP",
+        "test_otp_self": "Tes Kirim ke Nomor Sendiri",
+        "jwt_config": "Konfigurasi JWT",
+        "jwt_hours": "Jam",
+        "jwt_minutes": "Menit",
+        "jwt_desc": "Total durasi session adalah akumulasi Jam + Menit.",
+        "company_info": "Informasi Perusahaan",
+        "office_start_time": "Jam Masuk Kantor",
+        "office_start_time_desc": "Batas waktu karyawan dianggap tidak terlambat (HH:mm).",
+        "office_end_time": "Jam Pulang Kantor",
+        "office_end_time_desc": "Waktu standar pulang untuk auto check-out (HH:mm).",
+        "enable_auto_checkout": "Aktifkan Auto Check-out",
+        "auto_checkout_desc": "Check-out otomatis jika karyawan lupa check-out.",
+        "attendance_radius": "Absensi",
+        "office_lat": "Latitude Kantor",
+        "office_lng": "Longitude Kantor",
+        "radius_max": "Radius Maksimal (Meter)",
+        "radius_desc": "Jarak maksimal karyawan bisa melakukan absensi dari kantor. (0 = Bebas)",
+        "get_current_loc": "Ambil Lokasi Kantor Sekarang"
+    },
+    "time": {
+        "justNow": "Baru saja",
+        "minutesAgo": "menit lalu",
+        "hoursAgo": "jam lalu",
+        "daysAgo": "hari lalu",
+        "weeksAgo": "minggu lalu",
+        "monthsAgo": "bulan lalu",
+        "yearsAgo": "tahun lalu",
+        "dateNotAvailable": "Tanggal tidak tersedia",
+        "invalidDate": "Tanggal tidak valid"
+    },
+    "landing": {
+        "nav": {
+            "features": "Fitur",
+            "pricing": "Harga",
+            "faq": "FAQ",
+            "login": "Masuk",
+            "register": "Daftar"
+        },
+        "hero": {
+            "badge": "Software HRIS #1 di Indonesia",
+            "title": "Kelola Administrasi HR\nJadi Lebih Mudah",
+            "description": "HRIS membantu perusahaan mengotomatisasi absensi, cuti, payroll, dan administrasi HR. Hemat waktu, fokus pada pertumbuhan bisnis.",
+            "cta_primary": "Masuk",
+            "cta_secondary": "Demo",
+            "dashboard_mockup": {
+                "balance": "Total Gaji Bulan Ini",
+                "hiring": "Rekrutmen"
+            }
+        },
+        "features": {
+            "title": "Fitur Lengkap Modern",
+            "subtitle": "Platform terintegrasi untuk manajemen SDM yang efisien.",
+            "employees": {
+                "title": "Manajemen Karyawan",
+                "desc": "Kelola data karyawan lengkap dengan fitur pencarian canggih, filter, dan ekspor data."
+            },
+            "attendance": {
+                "title": "Absensi Geofencing",
+                "desc": "Pencatatan kehadiran berbasis lokasi GPS dengan perhitungan keterlambatan otomatis."
+            },
+            "payroll": {
+                "title": "Payroll Otomatis",
+                "desc": "Generator gaji otomatis untuk seluruh karyawan dengan fitur ekspor data dan riwayat penggajian."
+            },
+            "leave": {
+                "title": "Cuti & Izin",
+                "desc": "Sistem kuota cuti real-time dengan alur pengajuan dan persetujuan yang transparan."
+            },
+            "dashboard": {
+                "title": "Dashboard Analitik",
+                "desc": "Pantau total karyawan aktif, statistik kehadiran, dan grafik absensi secara real-time."
+            },
+            "whatsapp": {
+                "title": "Integrasi WhatsApp",
+                "desc": "Dukungan Login aman menggunakan kode OTP yang dikirim langsung melalui WhatsApp Bot."
+            }
+        },
+        "pricing": {
+            "title": "Pilih Paket Terbaik",
+            "subtitle": "Harga transparan tanpa biaya tersembunyi",
+            "monthly": "/bulan",
+            "compare_all": "Bandingkan Semua Fitur",
+            "starter": {
+                "title": "Starter",
+                "price": "Gratis",
+                "desc": "Untuk perusahaan kecil yang baru memulai.",
+                "cta": "Daftar Gratis",
+                "features": [
+                    "Hingga 5 Karyawan",
+                    "Absensi Online",
+                    "Database Karyawan",
+                    "Laporan Dasar"
+                ]
+            },
+            "growth": {
+                "title": "Growth",
+                "price": "500rb",
+                "desc": "Untuk perusahaan berkembang yang butuh fitur lebih.",
+                "cta": "Mulai Trial 14 Hari",
+                "features": [
+                    "Hingga 50 Karyawan",
+                    "Aplikasi Mobile",
+                    "Payroll Otomatis",
+                    "Support Prioritas"
+                ]
+            },
+            "pro": {
+                "title": "Pro",
+                "price": "1.5jt",
+                "desc": "Solusi lengkap tanpa batas untuk performa maksimal.",
+                "cta": "Hubungi Sales",
+                "features": [
+                    "Unlimited Karyawan",
+                    "Custom Domain",
+                    "API Access",
+                    "Dedicated Account Manager"
+                ]
+            },
+            "enterprise": {
+                "title": "Enterprise",
+                "price": "Custom",
+                "desc": "Kustomisasi penuh untuk kebutuhan spesifik perusahaan Anda.",
+                "cta": "Konsultasi Gratis",
+                "features": [
+                    "On-Premise Installation",
+                    "Custom Integration",
+                    "SLA Guarantee",
+                    "24/7 Support Tier 1"
+                ]
+            }
+        },
+        "about": {
+            "title": "Tentang Kami",
+            "subtitle": "Membangun masa depan manajemen SDM yang efisien dan transparan.",
+            "mission_title": "Misi Kami",
+            "mission_desc": "Membantu perusahaan di Indonesia tumbuh lebih cepat dengan otomatisasi administrasi SDM yang cerdas dan mudah digunakan.",
+            "story_title": "Cerita Kami",
+            "story_desc": "Berawal dari kebutuhan internal, kini berkembang menjadi solusi yang dipercaya banyak perusahaan.",
+            "contact_title": "Hubungi Kami",
+            "contact_desc": "Ada pertanyaan atau butuh bantuan? Kami siap membantu."
+        },
+        "faq": {
+            "title": "Pertanyaan Umum",
+            "subtitle": "Jawaban untuk pertanyaan yang sering diajukan",
+            "view_all": "Lihat Semua FAQ"
+        },
+        "footer": {
+            "desc": "Platform HRIS terdepan untuk efisiensi bisnis Anda.",
+            "copyright": "HRIS Systems",
+            "created_by": "Dibuat oleh",
+            "rights": "Hak cipta dilindungi.",
+            "privacy": "Kebijakan Privasi",
+            "terms": "Syarat & Ketentuan",
+            "product_title": "Produk",
+            "company_title": "Perusahaan",
+            "support_title": "Halaman",
+            "about": "Tentang Kami",
+            "careers": "Karir",
+            "contact": "Kontak"
+        }
+    },
+    "profile": {
+        "title": "Profil",
+        "subtitle": "Kelola informasi pribadi dan keamanan akun Anda.",
+        "success": "Profil berhasil diperbarui!",
+        "errorFetch": "Gagal mengambil data profil",
+        "validationError": "Harap perbaiki kesalahan pada formulir",
+        "tabs": {
+            "account": "Akun",
+            "security": "Ganti Password",
+            "job": "Pekerjaan"
+        },
+        "edit": "Edit Profil",
+        "personal": {
+            "title": "Data Pribadi",
+            "subtitle": "Informasi dasar akun Anda.",
+            "username": "Username",
+            "fullName": "Nama Lengkap",
+            "email": "Alamat Email",
+            "phone": "Nomor WhatsApp / HP",
+            "placeholder": {
+                "username": "username",
+                "name": "Nama Anda",
+                "email": "email@perusahaan.com",
+                "phone": "0812..."
+            },
+            "usernameAvailable": "Username tersedia!",
+            "usernameTaken": "Username sudah digunakan",
+            "usernameCheckError": "Gagal memeriksa username",
+            "usernameHint": "Minimal 3 karakter tanpa spasi",
+            "emailAvailable": "Email tersedia!",
+            "emailTaken": "Email sudah digunakan",
+            "emailCheckError": "Gagal memeriksa email",
+            "emailHint": "Gunakan email perusahaan yang valid",
+            "phoneAvailable": "Nomor WhatsApp tersedia!",
+            "phoneTaken": "Nomor sudah terdaftar",
+            "phoneCheckError": "Gagal memeriksa nomor",
+            "phoneHint": "Gunakan format nomor HP Indonesia"
+        },
+        "job": {
+            "title": "Informasi Pekerjaan",
+            "subtitle": "Detail posisi dan kebijakan kerja Anda.",
+            "position": "Posisi / Jabatan",
+            "department": "Departemen",
+            "quotaTitle": "Statistik Cuti Tahunan",
+            "annualBalance": "Kuota Tahunan",
+            "usedLeave": "Cuti Terpakai",
+            "remaining": "Sisa Kuota",
+            "days": "hari"
+        },
+        "security": {
+            "title": "Keamanan",
+            "subtitle": "Ganti password akun Anda secara berkala.",
+            "newPassword": "Password Baru",
+            "confirmPassword": "Konfirmasi Password",
+            "update": "Update Password"
+        },
+        "otp": {
+            "title": "Verifikasi Nomor Baru",
+            "desc": "Kami telah mengirimkan kode OTP ke WhatsApp",
+            "inputLabel": "Kode OTP",
+            "resend": "Kirim Ulang Kode",
+            "verifying": "Mengirim...",
+            "verify": "Verifikasi & Simpan"
+        }
+    },
+    "notification_mgmt": {
+        "title": "Pengelolaan Notifikasi",
+        "subtitle": "Kelola pengumuman",
+        "add": "Tambah Notifikasi",
+        "form": {
+            "titleNew": "Buat Notifikasi Baru",
+            "titleEdit": "Edit Notifikasi",
+            "desc": "Masukkan detail notifikasi yang akan ditampilkan kepada pengguna.",
+            "fields": {
+                "title": "Judul",
+                "message": "Pesan",
+                "type": "Tipe Tampilan",
+                "category": "Kategori",
+                "destination": "Halaman Tujuan",
+                "targetRole": "Target Role",
+                "status": "Status"
+            },
+            "placeholders": {
+                "title": "Contoh: Pemadaman Sistem Besok",
+                "message": "Isi pesan notifikasi secara detail...",
+                "destination": "Pilih Halaman"
+            },
+            "types": {
+                "info": "Informasi (Biru)",
+                "warning": "Peringatan (Kuning)",
+                "success": "Sukses (Hijau)"
+            },
+            "categories": {
+                "general": "Umum",
+                "system": "Sistem",
+                "wa": "WhatsApp"
+            }
+        },
+        "table": {
+            "header": {
+                "content": "Judul & Pesan",
+                "category": "Kategori",
+                "target": "Target",
+                "status": "Status",
+                "actions": "Aksi"
+            },
+            "empty": "Belum ada notifikasi",
+            "emptyDesc": "Buat notifikasi pertama Anda untuk menyapa tim."
+        }
+    },
+    "activity_settings": {
+        "title": "Aktivitas",
+        "subtitle": "Kelola parameter absensi dan kebijakan kuota perusahaan.",
+        "attendance": {
+            "title": "Kebijakan Absensi",
+            "desc": "Atur jam kerja, lokasi kantor, dan toleransi absensi.",
+            "work_hours": "Jam Kerja",
+            "office_location": "Lokasi Kantor",
+            "radius_config": "Konfigurasi Radius"
+        },
+        "leave": {
+            "title": "Kebijakan Cuti",
+            "desc": "Kelola kuota cuti tahunan dan aturan lainnya.",
+            "annual_quota": "Kuota Cuti Tahunan (Hari)",
+            "quota_desc": "Jumlah standar kuota cuti tahunan yang diberikan kepada karyawan baru.",
+            "min_notice": "Pemberitahuan Minimal (Hari)",
+            "min_notice_desc": "Lama hari minimal sebelum tanggal cuti untuk mengajukan."
+        },
+        "real_time": {
+            "new_leave_toast": "Ada pengajuan cuti baru masuk!",
+            "new_leave_desc": "Silakan cek panel notifikasi atau halaman cuti.",
+            "pending_summary": "Ada {count} pengajuan cuti menunggu persetujuan.",
+            "pending_title": "Pengajuan Cuti Menunggu"
+        }
+    },
+    "leave_mgmt": {
+        "title": "Cuti & Izin",
+        "subtitle": "Kelola pengajuan cuti karyawan",
+        "form": {
+            "title": "Ajukan Cuti Baru",
+            "desc": "Isi formulir untuk mengajukan izin",
+            "type": "Tipe Cuti",
+            "startDate": "Mulai",
+            "endDate": "Selesai",
+            "reason": "Alasan",
+            "reasonPlaceholder": "Contoh: Acara keluarga",
+            "submit": "Kirim Pengajuan",
+            "submitting": "Mengirim...",
+            "success": "Pengajuan cuti berhasil dikirim",
+            "error": "Gagal mengajukan cuti"
+        },
+        "list": {
+            "titleAdmin": "Riwayat Pengajuan Masuk",
+            "titleUser": "Riwayat Pengajuan Saya",
+            "empty": "Belum ada data cuti.",
+            "action": {
+                "approve": "Setujui",
+                "reject": "Tolak",
+                "success": "Cuti berhasil di-{action}",
+                "error": "Gagal memproses"
+            }
+        },
+        "types": {
+            "ANNUAL": "Cuti Tahunan",
+            "annual": "Cuti Tahunan",
+            "SICK": "Sakit",
+            "sick": "Sakit",
+            "UNPAID": "Cuti Diluar Tanggungan",
+            "unpaid": "Cuti Diluar Tanggungan",
+            "EMERGENCY": "Izin",
+            "emergency": "Izin",
+            "MATERNITY": "Cuti Melahirkan",
+            "maternity": "Cuti Melahirkan",
+            "MARRIAGE": "Cuti Menikah",
+            "marriage": "Cuti Menikah",
+            "BEREAVEMENT": "Cuti Berduka",
+            "bereavement": "Cuti Berduka",
+            "DUTY": "Perjalanan Dinas",
+            "duty": "Perjalanan Dinas",
+            "OTHER": "Lainnya",
+            "other": "Lainnya"
+        },
+        "status": {
+            "PENDING": "Menunggu",
+            "APPROVED": "Disetujui",
+            "REJECTED": "Ditolak"
+        }
+    },
+    "userDetail": {
+        "admin": {
+            "title": "Administrator",
+            "notFound": "Admin tidak ditemukan."
+        },
+        "employee": {
+            "title": "Karyawan",
+            "notFound": "Karyawan tidak ditemukan."
+        },
+        "tabs": {
+            "profile": "Profil Akun",
+            "profileEmployee": "Profil Diri",
+            "activity": "Aktivitas",
+            "documents": "Dokumen & Arsip"
+        },
+        "profile": {
+            "title": "Informasi Admin",
+            "titleEmployee": "Informasi Karyawan",
+            "subtitle": "Detail profil administrator.",
+            "subtitleEmployee": "Detail data kepegawaian.",
+            "fullName": "Nama Lengkap",
+            "email": "Email Login",
+            "emailEmployee": "Alamat Email",
+            "role": "Role",
+            "position": "Posisi",
+            "department": "Departemen",
+            "baseSalary": "Gaji Pokok",
+            "joinDate": "Tanggal Bergabung",
+            "registeredSince": "Terdaftar Sejak"
+        },
+        "documents": {
+            "title": "Dokumen Kepegawaian",
+            "subtitle": "Upload KTP, Kontrak, atau dokumen lainnya.",
+            "uploadTitle": "Upload Dokumen Baru",
+            "documentName": "Nama Dokumen (e.g. KTP)",
+            "documentType": "Tipe Dokumen",
+            "types": {
+                "ktp": "KTP / Identitas",
+                "contract": "Kontrak Kerja",
+                "cv": "CV / Resume",
+                "others": "Lainnya"
+            },
+            "uploading": "Mengupload...",
+            "uploadSuccess": "Upload Berhasil!",
+            "uploadFailed": "Upload Gagal",
+            "empty": "Belum ada dokumen yang diupload."
+        },
+        "activity": {
+            "title": "Log Aktivitas",
+            "subtitle": "Riwayat aktivitas akun ini.",
+            "subtitleEmployee": "Riwayat aktivitas karyawan ini.",
+            "deleteAll": "Hapus Semua",
+            "empty": "Belum ada data aktivitas yang terekam.",
+            "page": "Halaman",
+            "of": "dari",
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "actions": {
+            "editProfile": "Edit Profil",
+            "save": "Simpan"
+        },
+        "dialog": {
+            "deleteTitle": "Konfirmasi Penghapusan",
+            "deleteSingle": "Apakah Anda yakin ingin menghapus log aktivitas ini?",
+            "deleteAll": "Apakah Anda yakin ingin menghapus SEMUA log aktivitas user ini? Tindakan ini tidak dapat dibatalkan.",
+            "cancel": "Batal",
+            "delete": "Hapus"
+        },
+        "toast": {
+            "logDeleted": "Log berhasil dihapus",
+            "logsDeleted": "Berhasil menghapus {count} log aktivitas.",
+            "deleteFailed": "Gagal menghapus log",
+            "error": "Terjadi kesalahan"
+        }
+    },
+    "organization": {
+        "title": "Departemen",
+        "subtitle": "Kelola Departemen dan Posisi.",
+        "search": "Cari departemen...",
+        "addButton": "Tambah",
+        "empty": {
+            "noMatch": "Tidak ada departemen yang cocok.",
+            "noData": "Belum ada departemen created."
+        },
+        "tooltip": {
+            "edit": "Edit / Detail",
+            "delete": "Hapus Departemen"
+        },
+        "confirmDelete": {
+            "title": "Hapus Departemen?",
+            "description": "Departemen ini akan dihapus beserta semua posisi di dalamnya. Tindakan ini tidak dapat dikembalikan.",
+            "confirm": "Ya, Hapus"
+        },
+        "toast": {
+            "deleteSuccess": "Departemen berhasil dihapus!",
+            "saveSuccess": "Departemen berhasil disimpan!",
+            "updateSuccess": "Perubahan disimpan",
+            "saveFailed": "Gagal menyimpan departemen",
+            "updateFailed": "Gagal menyimpan",
+            "notFound": "Departemen tidak ditemukan",
+            "fillData": "Mohon lengkapi data",
+            "error": "Terjadi kesalahan",
+            "positionDeleteSuccess": "Posisi berhasil dihapus!"
+        },
+        "new": {
+            "title": "Tambah Departemen Baru",
+            "subtitle": "Pilih dari daftar standar atau buat departemen baru.",
+            "nameLabel": "Nama Departemen",
+            "namePlaceholder": "Pilih atau ketik nama departemen...",
+            "searchPlaceholder": "Cari atau buat baru...",
+            "createNew": "Buat baru (Ketik dan tekan Enter)",
+            "suggestions": "Saran Departemen",
+            "hint": "Jika tidak ada di list, ketik manual di bawah ini.",
+            "customPlaceholder": "Atau ketik nama custom...",
+            "back": "Kembali",
+            "cancel": "Batal",
+            "save": "Simpan"
+        },
+        "edit": {
+            "title": "Edit Departemen",
+            "subtitle": "Ubah informasi departemen.",
+            "nameLabel": "Nama Departemen",
+            "codeLabel": "Kode Departemen",
+            "saveButton": "Simpan Perubahan",
+            "positionsTitle": "Posisi",
+            "addPosition": "Tambah Posisi",
+            "positionsSubtitle": "Daftar posisi di departemen ini.",
+            "noPositions": "Belum ada posisi.",
+            "loading": "Loading...",
+            "back": "Kembali"
+        },
+        "position": {
+            "confirmDelete": {
+                "title": "Hapus Posisi?",
+                "description": "Posisi ini akan dihapus secara permanen dari departemen."
+            },
+            "new": {
+                "title": "Tambah Posisi Baru",
+                "subtitle": "Pilih posisi standar atau buat custom untuk departemen",
+                "nameLabel": "Nama Posisi",
+                "namePlaceholder": "Pilih posisi...",
+                "searchPlaceholder": "Cari posisi di database core...",
+                "notFound": "Posisi tidak ditemukan di database core using query.",
+                "suggestions": "Saran dari Core Database",
+                "customPlaceholder": "Atau ketik nama jabatan custom...",
+                "levelLabel": "Level",
+                "back": "Kembali",
+                "cancel": "Batal",
+                "save": "Simpan",
+                "toast": {
+                    "fillTitle": "Mohon isi nama jabatan",
+                    "saveSuccess": "Posisi berhasil disimpan!",
+                    "saveFailed": "Gagal menyimpan posisi",
+                    "error": "Terjadi kesalahan",
+                    "updateSuccess": "Posisi berhasil diperbarui!",
+                    "updateFailed": "Gagal memperbarui posisi"
+                }
+            },
+            "edit": {
+                "title": "Edit Posisi",
+                "subtitle": "Ubah informasi posisi.",
+                "titleLabel": "Nama Posisi",
+                "levelLabel": "Level",
+                "saveButton": "Simpan Perubahan",
+                "back": "Kembali",
+                "loading": "Loading..."
+            }
+        },
+        "pagination": {
+            "showing": "Menampilkan",
+            "of": "dari",
+            "departments": "departemen",
+            "positions": "posisi",
+            "previous": "Sebelumnya",
+            "next": "Selanjutnya",
+            "page": "Halaman"
+        },
+        "company": {
+            "title": "Perusahaan",
+            "subtitleSuper": "Kelola daftar semua perusahaan tenant (SaaS).",
+            "subtitleOwner": "Kelola informasi perusahaan Anda.",
+            "add": "Tambah Perusahaan",
+            "searchPlaceholder": "Cari perusahaan...",
+            "table": {
+                "name": "Nama Perusahaan",
+                "owner": "Owner",
+                "contact": "Kontak",
+                "totalEmployee": "Total Karyawan",
+                "plan": "Paket",
+                "actions": "Aksi"
+            },
+            "form": {
+                "titleNew": "Registrasi Perusahaan Baru",
+                "titleEdit": "Detail & Ubah Info Perusahaan",
+                "name": "Nama Perusahaan",
+                "namePlaceholder": "PT Maju Jaya",
+                "plan": "Paket Langganan",
+                "ownerPassword": "Password Owner",
+                "ownerName": "Nama Owner",
+                "ownerEmail": "Email Owner",
+                "address": "Alamat",
+                "addressPlaceholder": "Jl. Sudirman No. 123",
+                "website": "Website",
+                "websitePlaceholder": "https://perusahaan.com",
+                "phone": "Telepon",
+                "phonePlaceholder": "021-xxxx",
+                "whatsapp": "WhatsApp",
+                "whatsappPlaceholder": "0812-xxxx",
+                "email": "Email Perusahaan",
+                "emailPlaceholder": "info@perusahaan.com",
+                "billingHint": "* Hanya Superadmin yang dapat mengubah paket langganan ini.",
+                "tabs": {
+                    "info": "Informasi Dasar",
+                    "contact": "Kontak",
+                    "billing": "Paket & Billing"
+                }
+            },
+            "toast": {
+                "createSuccess": "Perusahaan berhasil dibuat!",
+                "createFailed": "Gagal membuat perusahaan",
+                "updateSuccess": "Informasi perusahaan berhasil diperbarui!",
+                "updateFailed": "Gagal memperbarui perusahaan",
+                "deleteSuccess": "Perusahaan berhasil dihapus!",
+                "deleteFailed": "Gagal menghapus perusahaan"
+            },
+            "dialog": {
+                "deleteTitle": "Hapus Perusahaan?",
+                "deleteDesc": "Perusahaan ini beserta semua data karyawan, departemen, dan dokumen akan dihapus permanen.",
+                "deleteConfirm": "Ya, Hapus Semua"
+            }
+        }
+    },
+    "whatsapp_mgmt": {
+        "title": "Manajemen WhatsApp",
+        "subtitle": "Hubungkan nomor WhatsApp untuk notifikasi & fitur bot.",
+        "manage_bot": "Manajemen Bot (Superadmin)",
+        "connection_status": "Status Koneksi",
+        "connect_type": {
+            "private": "Koneksi Mandiri (QR)",
+            "shared": "Gunakan Bot Sistem"
+        },
+        "not_connected": "WhatsApp Belum Terhubung",
+        "connect_desc": "Hubungkan WhatsApp perusahaan Anda untuk mengirim notifikasi & OTP otomatis.",
+        "connect_btn": "Hubungkan WhatsApp",
+        "scan_qr": "Scan QR Code",
+        "scan_instruction": "Buka WhatsApp di HP Anda > Menu > Perangkat Tertaut > Tautkan Perangkat",
+        "status": {
+            "connected": "TERHUBUNG",
+            "disconnected": "TERPUTUS / KOEF",
+            "ready": "Siap mengirim pesan",
+            "system_infra": "Menggunakan infrastruktur sistem"
+        },
+        "action": {
+            "unlink_bot": "Lepaskan Bot",
+            "disconnect": "Putuskan",
+            "unlink_title": "Lepaskan Bot Sistem?",
+            "disconnect_title": "Putuskan Koneksi?",
+            "unlink_desc": "Anda akan melepaskan penggunaan bot sistem. Anda bisa beralih ke koneksi mandiri kapan saja.",
+            "disconnect_desc": "Bot tidak akan bisa mengirim pesan lagi sampai Anda menghubungkannya kembali.",
+            "unlink_confirm": "Ya, Lepaskan",
+            "disconnect_confirm": "Ya, Putuskan"
+        },
+        "test": {
+            "title": "Tes Kirim Pesan",
+            "recipient": "Nomor Tujuan",
+            "select_contact": "Pilih Kontak",
+            "quick_contact": "Kontak Cepat",
+            "me": "Saya",
+            "developer": "Developer",
+            "message_body": "Isi Pesan",
+            "fill_template": "Isi Template",
+            "send": "Kirim",
+            "default_msg": "Halo! Ini pesan tes dari HRIS."
+        },
+        "logs": "System Logs",
+        "shared": {
+            "available": "Bot Sistem Tersedia",
+            "desc": "Pilih salah satu bot yang disediakan sistem.",
+            "empty": "Belum ada bot sistem yang tersedia.",
+            "select": "Pilih Bot"
+        }
+    }
+}

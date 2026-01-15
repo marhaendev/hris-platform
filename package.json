@@ -1,0 +1,21 @@
+{
+    "name": "hris-gateway-root",
+    "version": "1.0.0",
+    "description": "Root orchestrator for HRIS Web and Bot",
+    "private": true,
+    "workspaces": [
+        "web",
+        "bot"
+    ],
+    "scripts": {
+        "install:all": "npm install",
+        "dev": "concurrently \"npm run dev -w web\" \"npm run dev -w bot\"",
+        "dev:web": "npm run dev -w web",
+        "dev:bot": "npm run dev -w bot",
+        "docker:up": "docker compose up --build",
+        "docker:down": "docker compose down"
+    },
+    "dependencies": {
+        "concurrently": "^8.2.2"
+    }
+}

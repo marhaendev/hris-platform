@@ -1,0 +1,85 @@
+services:
+  # =========================================
+  # WEB SERVICE
+  # =========================================
+  web-dev:
+    container_name: hris-web-dev
+    profiles: ["development"]
+    build:
+      context: ./web
+      target: deps
+    command: npm run dev
+    env_file:
+      - .env
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+      - /app/.next
+      - ./web/data:/app/data
+      - uploads_data:/app/public/uploads
+    ports:
+      - "${WEB_PORT}:3000"
+    environment:
+      - NODE_ENV=development
+      - TZ=Asia/Jakarta
+      - BOT_URL=http://bot-dev:3001
+      - WATCHPACK_POLLING=true
+    restart: unless-stopped
+
+  web-prod:
+    container_name: hris-web-prod
+    profiles: ["production"]
+    build:
+      context: ./web
+      target: runner
+    env_file:
+      - .env
+    ports:
+      - "${WEB_PORT}:3000"
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Jakarta
+    volumes:
+      - ./web/data:/app/data
+      - uploads_data:/app/public/uploads
+    restart: unless-stopped
+
+  # =========================================
+  # BOT SERVICE
+  # =========================================
+  bot-dev:
+    container_name: hris-bot-dev
+    profiles: ["development"]
+    build: ./bot
+    command: npx nodemon -L --ignore auth_baileys src/index.js
+    env_file:
+      - .env
+    volumes:
+      - ./bot:/app
+      - /app/node_modules
+      - bot_auth_data:/app/auth_baileys
+    ports:
+      - "${BOT_PORT}:3001"
+    environment:
+      - TZ=Asia/Jakarta
+      - CHOKIDAR_USEPOLLING=true
+    restart: unless-stopped
+
+  bot-prod:
+    container_name: hris-bot-prod
+    profiles: ["production"]
+    build: ./bot
+    command: npm start
+    env_file:
+      - .env
+    volumes:
+      - bot_auth_data:/app/auth_baileys
+    ports:
+      - "${BOT_PORT}:3001"
+    environment:
+      - TZ=Asia/Jakarta
+    restart: unless-stopped
+
+volumes:
+  uploads_data:
+  bot_auth_data:

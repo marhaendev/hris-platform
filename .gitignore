@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database (Keep only the main hris.db)
+web/data/sqlite/*.db.bak
+web/data/sqlite/*copy*
+web/data/sqlite/*Copy*
+*.sqlite-journal
+
+# Scripts (utility/debug scripts)
+web/scripts/
+
+# Documentation (Internal)
+docs/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor directories
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Debug files
+*.log
+
+# Web Backups
+web - *
+
+# WhatsApp Sessions
+sessions/*
+!sessions/628561366636/
