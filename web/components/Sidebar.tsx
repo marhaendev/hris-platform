@@ -225,6 +225,11 @@ export function Sidebar({
 
     const [isSearchingCompanies, setIsSearchingCompanies] = useState(false);
     const { companyLogo } = useCompanyLogo();
+    const [imgSrc, setImgSrc] = useState('/icon.png');
+
+    useEffect(() => {
+        if (companyLogo) setImgSrc(companyLogo);
+    }, [companyLogo]);
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -622,12 +627,13 @@ export function Sidebar({
                         <>
                             <div className="relative h-10 w-32">
                                 <Image
-                                    src={companyLogo}
+                                    src={imgSrc}
                                     alt="HRIS Logo"
                                     fill
                                     className="object-contain object-left"
                                     priority
                                     unoptimized
+                                    onError={() => setImgSrc('/icon.png')}
                                 />
                             </div>
                             <Button
@@ -643,11 +649,12 @@ export function Sidebar({
                         <div className="flex items-center justify-center relative w-full">
                             <div className="relative h-8 w-8">
                                 <Image
-                                    src={companyLogo}
+                                    src={imgSrc}
                                     alt="HRIS"
                                     fill
                                     className="object-contain object-center"
                                     unoptimized
+                                    onError={() => setImgSrc('/icon.png')}
                                 />
                             </div>
                             <Button

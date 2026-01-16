@@ -13,15 +13,35 @@ export async function GET(req: NextRequest) {
     const companyId = user.companyId || 1;
 
     try {
-        let company = db.prepare('SELECT * FROM Company WHERE id = ?').get(companyId);
+        let company = db.prepare('SELECT * FROM Company WHERE id = ?').get(companyId) as any;
 
         if (!company) {
             // Fallback: Get the first company available (handling dev drift)
-            company = db.prepare('SELECT * FROM Company LIMIT 1').get();
+            company = db.prepare('SELECT * FROM Company LIMIT 1').get() as any;
         }
 
         if (!company) {
             return NextResponse.json({ error: 'Company not found' }, { status: 404 });
+        }
+
+        // Validate if logo file exists in filesystem
+        if (company.logo_url && company.logo_url !== '/icon.png') {
+            try {
+                const publicDir = path.join(process.cwd(), 'public');
+                // Remove potential query params usually not present in DB but just in case
+                const cleanPath = company.logo_url.split('?')[0];
+                const filePath = path.join(publicDir, cleanPath.startsWith('/') ? cleanPath.substring(1) : cleanPath);
+
+                if (!fs.existsSync(filePath)) {
+                    // File is missing (likely due to container rebuild without volume mapping)
+                    // Fallback to default icon
+                    company.logo_url = '/icon.png';
+                }
+            } catch (err) {
+                console.error("Error checking logo file existence:", err);
+                // Fallback on error
+                company.logo_url = '/icon.png';
+            }
         }
 
         return NextResponse.json({ company });
