@@ -22,20 +22,30 @@ import { Layers } from "lucide-react";
 export default function CompaniesPage() {
     const { t } = useLanguage();
     const router = useRouter();
-    const { user, refreshCompany } = useUser();
+    const userData = useUser(); // Context is { ...user, refreshCompany }
+    const { refreshCompany, ...user } = userData || {};
     const [companies, setCompanies] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        if (user && !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+        if (userData && Object.keys(user).length > 0 && !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
             router.push('/dashboard');
             toast.error("Akses Ditolak: Anda tidak memiliki izin");
         }
-    }, [user, router]);
+    }, [userData, user, router]);
 
-    if (!user || !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
-        return null;
+    // Wait for user to be populated
+    if (!userData || Object.keys(user).length === 0) {
+        return <div className="flex items-center justify-center min-h-[60vh] text-slate-400">Loading Access...</div>;
+    }
+
+    if (!['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh] text-red-500 font-bold">
+                Access Denied. Role: {user.role || 'Unknown'}
+            </div>
+        );
     }
 
     const [isAddOpen, setIsAddOpen] = useState(false);
