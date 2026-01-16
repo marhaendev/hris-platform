@@ -192,8 +192,8 @@ export async function POST(request: Request) {
         // Notify Bot to Reload Scheduler
         if (body.auto_vacuum_enabled !== undefined || body.auto_vacuum_schedule !== undefined) {
             try {
-                // Using 127.0.0.1:3001 as Bot URL
-                fetch('http://127.0.0.1:3001/scheduler/refresh', { method: 'POST' })
+                const botUrl = process.env.BOT_URL || 'http://localhost:3001';
+                fetch(`${botUrl}/scheduler/refresh`, { method: 'POST' })
                     .catch(e => console.error('[Settings API] Failed to notify bot:', e.message));
             } catch (e) {
                 // Ignore fetch errors

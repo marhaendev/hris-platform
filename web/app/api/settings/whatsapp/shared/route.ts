@@ -13,7 +13,8 @@ export async function GET() {
         const globalBots = db.prepare('SELECT sessionId, name FROM WhatsAppBot WHERE isGlobal = 1').all() as any[];
 
         // Fetch live status for these bots
-        const botRes = await fetch(`${process.env.BOT_URL || 'http://localhost:3001'}/sessions`);
+        const botUrl = process.env.BOT_URL || 'http://localhost:3001';
+        const botRes = await fetch(`${botUrl}/sessions`);
         const botData = await botRes.json();
         const liveSessions = botData.sessions || [];
 

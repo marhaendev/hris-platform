@@ -10,7 +10,9 @@ export async function GET() {
 
     try {
         // 1. Fetch live sessions from bot service
-        const botRes = await fetch(`${process.env.BOT_URL || 'http://localhost:3001'}/sessions`);
+        // Use centralized BOT_URL from env, fallback to localhost for development
+        const botUrl = process.env.BOT_URL || 'http://localhost:3001';
+        const botRes = await fetch(`${botUrl}/sessions`);
         const botData = await botRes.json();
         const liveSessions = (botData.sessions || []).filter((ls: any) => {
             // Only keep if it's NOT a temporary 'new-...' ID OR it has a real phone number

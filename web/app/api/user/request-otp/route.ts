@@ -39,52 +39,24 @@ export async function POST(request: Request) {
             .run(phone, otpCode, expiresAt);
 
         // Send via WhatsApp Bot
-        // Priority: ENV -> Service Name (Docker) -> Localhost (Host)
-        const botBase = process.env.BOT_URL || 'http://bot:3001';
+        const botUrl = process.env.BOT_URL || 'http://localhost:3001';
 
         // Get custom template or use default
         const templateSetting = db.prepare("SELECT value FROM SystemSetting WHERE key = 'otp_message_template'").get() as { value: string } | undefined;
-        let message = templateSetting?.value || `*Kode Verifikasi HRIS Anda*\n\nKode OTP: *{{code}}*\n\nJangan berikan kode ini kepada siapapun (termasuk staf HRIS).`;
+        let message = templateSetting?.value || `*Kode Verifikasi HRIS Anda*\n\nKode OTP: *{{code}}*\n\nJangan berikan kode ini kepada staf HR atau siapapun.`;
 
         // Replace placeholder
         message = message.replace('{{code}}', otpCode);
 
-        let messageSent = false;
-        let lastError = '';
+        const botRes = await fetch(`${botUrl}/send-message`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, message })
+        });
 
-        const endpointsToTry = [
-            `${botBase}/send-message`,
-            'http://localhost:3001/send-message',
-            'http://127.0.0.1:3001/send-message'
-        ];
-
-        // Remove duplicates
-        const uniqueEndpoints = Array.from(new Set(endpointsToTry));
-
-        for (const url of uniqueEndpoints) {
-            try {
-                const botRes = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone, message })
-                });
-
-                if (botRes.ok) {
-                    messageSent = true;
-                    break;
-                } else {
-                    const errorErr = await botRes.text();
-                    lastError = `Status ${botRes.status}: ${errorErr}`;
-                    console.error(`Failed to send to ${url}: ${lastError}`);
-                }
-            } catch (err: any) {
-                lastError = err.message;
-                console.error(`Failed to connect to ${url}: ${err.message}`);
-            }
-        }
-
-        if (!messageSent) {
-            throw new Error(`Gagal mengirim WhatsApp (Tried ${uniqueEndpoints.length} endpoints). Error: ${lastError}`);
+        if (!botRes.ok) {
+            const errorMsg = await botRes.text();
+            throw new Error(`Bot API Error: ${errorMsg}`);
         }
 
         return NextResponse.json({ success: true, message: 'OTP terkirim ke WhatsApp' });

@@ -29,8 +29,8 @@ export async function POST(request: Request) {
 
         // 4. Send via WhatsApp Bot
         try {
-            // Use 'bot' service name in Docker network, fallback to localhost for local dev outside docker
-            const botUrl = process.env.BOT_URL || 'http://bot:3001';
+            // Use centralized BOT_URL from env, fallback to localhost for development
+            const botUrl = process.env.BOT_URL || 'http://localhost:3001';
             const botRes = await fetch(`${botUrl}/send-message`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
