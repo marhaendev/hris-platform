@@ -79,7 +79,7 @@ A comprehensive Human Resource Information System (HRIS) platform built with mod
 
 ## 📦 Installation & Setup
 
-### Method 1: Docker Compose (Recommended)
+### Method 1: Using Docker (Recommended)
 
 1.  **Clone repository**
     ```bash
@@ -109,7 +109,9 @@ A comprehensive Human Resource Information System (HRIS) platform built with mod
     - Web App: [http://localhost:3000](http://localhost:3000)
     - Bot API: [http://localhost:3001](http://localhost:3001)
 
-### Method 2: Manual Installation
+### Method 2: Using NPM (Local)
+
+Run the application directly on your machine (requires Node.js v20+).
 
 1.  **Clone repository**
     ```bash
@@ -117,40 +119,32 @@ A comprehensive Human Resource Information System (HRIS) platform built with mod
     cd hris-platform
     ```
 
-2.  **Install dependencies (Root)**
+2.  **Install Dependencies**
     ```bash
+    # Install all dependencies (Web & Bot) from root
     npm install
     ```
 
-3.  **Setup Web Application**
+3.  **Configure environment**
     ```bash
-    cd web
-    npm install
+    cp .env.example .env
+    ```
+
+4.  **Run Application**
+    ```bash
+    # Run Web and Bot concurrently
     npm run dev
     ```
-    Web app will run at [http://localhost:3000](http://localhost:3000)
-
-4.  **Setup Bot Service** (New terminal)
+    
+    Alternative commands:
     ```bash
-    cd bot
-    npm install
-    npm start
+    npm run dev:web   # Run Web only
+    npm run dev:bot   # Run Bot only
     ```
-    Bot API will run at [http://localhost:3001](http://localhost:3001)
 
-### Method 3: Workspace Mode (Recommended for Development)
-
-```bash
-# Install all dependencies
-npm install
-
-# Run web + bot together
-npm run dev
-
-# Or run separately:
-npm run dev:web   # Web only
-npm run dev:bot   # Bot only
-```
+5.  **Access Application**
+    - Web App: [http://localhost:3000](http://localhost:3000)
+    - Bot API: [http://localhost:3001](http://localhost:3001)
 
 ## 📁 Project Structure
 

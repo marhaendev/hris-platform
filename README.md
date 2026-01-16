@@ -79,7 +79,7 @@ Platform Sistem Informasi Sumber Daya Manusia (HRIS) yang komprehensif, dibangun
 
 ## 📦 Instalasi & Setup
 
-### Metode 1: Docker Compose (Recommended)
+### Metode 1: Menggunakan Docker (Recommended)
 
 1.  **Clone repository**
     ```bash
@@ -109,7 +109,9 @@ Platform Sistem Informasi Sumber Daya Manusia (HRIS) yang komprehensif, dibangun
     - Web App: [http://localhost:3000](http://localhost:3000)
     - Bot API: [http://localhost:3001](http://localhost:3001)
 
-### Metode 2: Manual Installation
+### Metode 2: Menggunakan NPM (Local)
+
+Jalankan aplikasi secara langsung di komputer Anda (membutuhkan Node.js versi 20+).
 
 1.  **Clone repository**
     ```bash
@@ -117,40 +119,32 @@ Platform Sistem Informasi Sumber Daya Manusia (HRIS) yang komprehensif, dibangun
     cd hris-platform
     ```
 
-2.  **Install dependencies (Root)**
+2.  **Install Dependencies**
     ```bash
+    # Install semua dependencies (Web & Bot) sekaligus dari root
     npm install
     ```
 
-3.  **Setup Web Application**
+3.  **Konfigurasi environment**
     ```bash
-    cd web
-    npm install
+    cp .env.example .env
+    ```
+
+3.  **Jalankan Aplikasi**
+    ```bash
+    # Menjalankan Web dan Bot secara bersamaan
     npm run dev
     ```
-    Web app akan berjalan di [http://localhost:3000](http://localhost:3000)
-
-4.  **Setup Bot Service** (Terminal baru)
+    
+    Alternatif perintah lain:
     ```bash
-    cd bot
-    npm install
-    npm start
+    npm run dev:web   # Menjalankan Web saja
+    npm run dev:bot   # Menjalankan Bot saja
     ```
-    Bot API akan berjalan di [http://localhost:3001](http://localhost:3001)
 
-### Metode 3: Workspace Mode (Recommended untuk Development)
-
-```bash
-# Install semua dependencies
-npm install
-
-# Jalankan web + bot bersamaan
-npm run dev
-
-# Atau jalankan terpisah:
-npm run dev:web   # Web saja
-npm run dev:bot   # Bot saja
-```
+4.  **Akses Aplikasi**
+    - Web App: [http://localhost:3000](http://localhost:3000)
+    - Bot API: [http://localhost:3001](http://localhost:3001)
 
 ## 📁 Struktur Project
 
