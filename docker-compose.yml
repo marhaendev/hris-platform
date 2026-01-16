@@ -39,6 +39,7 @@ services:
     environment:
       - NODE_ENV=production
       - TZ=Asia/Jakarta
+      - BOT_URL=http://bot-prod:3001
     volumes:
       - ./web/data:/app/data
       - uploads_data:/app/public/uploads
