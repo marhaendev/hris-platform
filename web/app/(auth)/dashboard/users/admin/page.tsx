@@ -61,6 +61,8 @@ export default function AdminUsersPage() {
             const data = await res.json();
             setAdmins(Array.isArray(data) ? data : []);
         } catch (err) {
+            console.error(err);
+        } finally {
             setIsLoading(false);
         }
     };

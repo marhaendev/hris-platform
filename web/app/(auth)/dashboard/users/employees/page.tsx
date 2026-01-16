@@ -708,6 +708,16 @@ export default function EmployeesPage() {
                 variant="danger"
                 onConfirm={handleMassDelete}
             />
+
+            <ConfirmDialog
+                open={deleteConfirmOpen}
+                onOpenChange={setDeleteConfirmOpen}
+                title={t.employees.deleteConfirmTitle || "Hapus Karyawan?"}
+                description={t.employees.deleteConfirmDesc || "Tindakan ini tidak dapat dibatalkan. Data karyawan akan dihapus permanen."}
+                confirmText={t.common.delete}
+                variant="danger"
+                onConfirm={confirmDelete}
+            />
         </div>
     );
 }

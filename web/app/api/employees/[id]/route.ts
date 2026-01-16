@@ -11,7 +11,12 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
         const id = params.id;
 
-        // Verify ownership and role
+        // 1. Check Requestor Permission
+        if (!['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(session.role)) {
+            return NextResponse.json({ error: 'Unauthorized: Only Admin and Owner can delete employees' }, { status: 403 });
+        }
+
+        // Verify target existence
         const empQuery = 'SELECT e.userId, u.role, e.companyId FROM Employee e JOIN User u ON e.userId = u.id WHERE e.id = ?';
         const employee = db.prepare(empQuery).get(id) as any;
 
@@ -19,12 +24,22 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
             return NextResponse.json({ error: 'Employee not found' }, { status: 404 });
         }
 
-        if (employee.companyId !== session.companyId) {
+        // 2. Check Company Boundary
+        if (employee.companyId !== session.companyId && session.role !== 'SUPERADMIN') {
             return NextResponse.json({ error: 'Unauthorized: Different company' }, { status: 403 });
         }
 
-        if ((session.role === 'ADMIN' || session.role === 'COMPANY_OWNER') && employee.role === 'SUPERADMIN') {
-            return NextResponse.json({ error: 'Terlarang: Anda tidak dapat menghapus Superadmin' }, { status: 403 });
+        // 3. Hierarchy Checks
+        // ADMIN cannot delete OWNER, SUPERADMIN, or other ADMINs
+        if (session.role === 'ADMIN') {
+            if (['COMPANY_OWNER', 'SUPERADMIN', 'ADMIN'].includes(employee.role)) {
+                return NextResponse.json({ error: 'Unauthorized: Admin cannot delete Owner, Superadmin, or other Admins' }, { status: 403 });
+            }
+        }
+
+        // OWNER cannot delete SUPERADMIN
+        if (session.role === 'COMPANY_OWNER' && employee.role === 'SUPERADMIN') {
+            return NextResponse.json({ error: 'Unauthorized: Owner cannot delete Superadmin' }, { status: 403 });
         }
 
         const deleteUser = db.prepare('DELETE FROM User WHERE id = ?');
