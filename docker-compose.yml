@@ -74,11 +74,12 @@ services:
     env_file:
       - .env
     volumes:
-      - bot_auth_data:/app/auth_baileys
+      - ./sessions:/app/sessions
     ports:
       - "${BOT_PORT}:3001"
     environment:
       - TZ=Asia/Jakarta
+      - AUTH_FOLDER=/app/sessions
     restart: unless-stopped
 
 volumes:
