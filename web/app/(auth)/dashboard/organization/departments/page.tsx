@@ -188,19 +188,21 @@ export default function OrganizationPage() {
                                                 <TooltipContent>{t?.organization?.tooltip?.edit || 'Detail & Posisi'}</TooltipContent>
                                             </Tooltip>
 
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
-                                                        onClick={(e) => handleDelete(dept.id, e)}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </TooltipTrigger>
-                                                <TooltipContent>{t?.organization?.tooltip?.delete || 'Hapus Departemen'}</TooltipContent>
-                                            </Tooltip>
+                                            {(!dept.employeeCount || dept.employeeCount === 0) && (
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
+                                                            onClick={(e) => handleDelete(dept.id, e)}
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>{t?.organization?.tooltip?.delete || 'Hapus Departemen'}</TooltipContent>
+                                                </Tooltip>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>
