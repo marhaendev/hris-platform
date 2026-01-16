@@ -19,7 +19,7 @@ interface LandingPageContentProps {
 }
 
 export function LandingPageContent({ faqs }: LandingPageContentProps) {
-    const { t, language } = useLanguage();
+    const { t, locale } = useLanguage();
     const [activePopup, setActivePopup] = useState<'overview' | 'employees' | 'attendance' | 'payroll' | 'recruitment'>('overview');
     const [cycleCount, setCycleCount] = useState(1);
 
@@ -471,8 +471,8 @@ export function LandingPageContent({ faqs }: LandingPageContentProps) {
 
                     <Accordion type="single" collapsible className="w-full mb-10">
                         {faqs.map((faq: any) => {
-                            const question = language === 'en' ? (faq.question_en || faq.question) : (faq.question_id || faq.question);
-                            const answer = language === 'en' ? (faq.answer_en || faq.answer) : (faq.answer_id || faq.answer);
+                            const question = locale === 'en' ? (faq.question_en || faq.question) : (faq.question_id || faq.question);
+                            const answer = locale === 'en' ? (faq.answer_en || faq.answer) : (faq.answer_id || faq.answer);
 
                             return (
                                 <AccordionItem key={faq.id} value={`item-${faq.id}`}>

@@ -68,6 +68,7 @@ import {
 import { toast } from 'sonner';
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLanguage } from "@/lib/contexts/LanguageContext";
+import { useCompanyLogo } from "@/lib/hooks/useCompanyLogo";
 
 // ... imports
 
@@ -223,15 +224,7 @@ export function Sidebar({
     const [isStartingSim, setIsStartingSim] = useState(false);
 
     const [isSearchingCompanies, setIsSearchingCompanies] = useState(false);
-    const [companyLogo, setCompanyLogo] = useState<string>('/icon.png');
-
-    useEffect(() => {
-        const fetchLogo = async () => {
-            // Force refresh by adding timestamp
-            setCompanyLogo(`/icon.png?v=${Date.now()}`);
-        };
-        fetchLogo();
-    }, []);
+    const { companyLogo } = useCompanyLogo();
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -337,16 +330,10 @@ export function Sidebar({
             "Pengaturan": t.nav.system,
             "WhatsApp Bot": t.nav.whatsapp,
             "Landing Page": "Landing Page",
-
             "Dashboard": t.nav.dashboard,
-            "Organisasi": t.nav.organization,
-            "Users": t.nav.users,
-            "Data Master": t.nav.master_data,
             "Bank": t.nav.master_bank,
             "Metode Bayar": t.nav.master_payment,
             "Aktivitas": t.nav.activities_settings || "Activities",
-            "Keuangan": t.nav.finance,
-            "Pengaturan": t.nav.system,
             "About": t.nav.about,
             "Analytics": t.nav.analytics,
             "Admin": t.nav.admin,
@@ -367,7 +354,6 @@ export function Sidebar({
             "Riwayat": t.nav.history,
             "Settings": t.nav.settings,
             "Integrasi WhatsApp": t.nav.whatsapp,
-            "WhatsApp Bot": t.nav.whatsapp,
             "Notifikasi": t.nav.notifications,
             "Perusahaan": t.nav.companies,
             "Departemen": t.nav.master_departemen,

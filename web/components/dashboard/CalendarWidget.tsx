@@ -33,7 +33,7 @@ interface CalendarWidgetProps {
 }
 
 export const CalendarWidget = ({ events }: CalendarWidgetProps) => {
-    const { t, currentLocale } = useLanguage();
+    const { t, locale } = useLanguage();
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
     const startDate = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 }); // Monday start
@@ -67,7 +67,7 @@ export const CalendarWidget = ({ events }: CalendarWidgetProps) => {
         <Card className="shadow-sm border-slate-200 h-full flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                 <CardTitle className="text-sm font-medium text-slate-700 flex items-center gap-2">
-                    <span className="capitalize">{format(currentMonth, 'MMMM yyyy', { locale: currentLocale === 'id' ? id : undefined })}</span>
+                    <span className="capitalize">{format(currentMonth, 'MMMM yyyy', { locale: locale === 'id' ? id : undefined })}</span>
                 </CardTitle>
                 <div className="flex items-center gap-1">
                     <Button variant="ghost" size="icon" className="h-6 w-6" onClick={prevMonth}>

@@ -15,6 +15,7 @@ import {
     DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useCompanyLogo } from "@/lib/hooks/useCompanyLogo";
 
 interface DashboardTopNavProps {
     user?: any;
@@ -30,9 +31,9 @@ interface Company {
 
 export function DashboardTopNav({ user, isCollapsed, onMenuClick, refreshKey }: DashboardTopNavProps) {
     const [companies, setCompanies] = useState<Company[]>([]);
-
     const [currentCompany, setCurrentCompany] = useState<Company | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const { companyLogo } = useCompanyLogo();
 
     const isSuperadmin = user?.role === 'SUPERADMIN' || user?.impersonatorId;
 
@@ -131,12 +132,13 @@ export function DashboardTopNav({ user, isCollapsed, onMenuClick, refreshKey }: 
                     </Button>
                     <div className="relative h-8 w-28">
                         <Image
-                            src="/icon.png"
+                            src={companyLogo}
                             alt="HRIS Logo"
                             fill
                             sizes="112px"
                             className={cn("object-contain object-left", user?.impersonatorId && "brightness-0 invert")}
                             priority
+                            unoptimized
                         />
                     </div>
                 </div>

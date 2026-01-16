@@ -66,7 +66,7 @@ interface PayrollRecord {
 import { useUser } from '@/app/(auth)/DashboardClientLayout';
 
 export default function PayrollDashboard() {
-    const { t, currentLocale } = useLanguage();
+    const { t, locale } = useLanguage();
     const router = useRouter();
     const user = useUser();
     const [month, setMonth] = useState(new Date().getMonth() + 1);
@@ -98,7 +98,7 @@ export default function PayrollDashboard() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const months = Array.from({ length: 12 }, (_, i) => {
-        return new Intl.DateTimeFormat(currentLocale === 'id' ? 'id-ID' : 'en-US', { month: 'long' }).format(new Date(2000, i, 1));
+        return new Intl.DateTimeFormat(locale === 'id' ? 'id-ID' : 'en-US', { month: 'long' }).format(new Date(2000, i, 1));
     });
 
     const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);

@@ -348,7 +348,9 @@
         "csvSuccess": "Download CSV berhasil",
         "excelSuccess": "Download Excel berhasil",
         "noDataExport": "Tidak ada data untuk diexport",
-        "noDataPrint": "Tidak ada data untuk dicetak"
+        "noDataPrint": "Tidak ada data untuk dicetak",
+        "errorFetch": "Gagal mengambil data payroll",
+        "errorGenerate": "Gagal menghasilkan payroll"
     },
     "payrollSalaries": {
         "title": "Pengaturan Gaji Pokok",

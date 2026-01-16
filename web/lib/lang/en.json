@@ -348,7 +348,9 @@
         "csvSuccess": "CSV Download successful",
         "excelSuccess": "Excel Download successful",
         "noDataExport": "No data to export",
-        "noDataPrint": "No data to print"
+        "noDataPrint": "No data to print",
+        "errorFetch": "Failed to fetch payroll data",
+        "errorGenerate": "Failed to generate payroll"
     },
     "payrollSalaries": {
         "title": "Base Salary Settings",
