@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
-const BASE_AUTH_FOLDER = process.env.AUTH_FOLDER || path.join(__dirname, '../../../sessions');
+const BASE_AUTH_FOLDER = process.env.AUTH_FOLDER || path.join(__dirname, '../../sessions');
 
 // Set global error handlers
 process.on('uncaughtException', (err) => {
