@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         let notifications;
         if (management) {
             // Role check for management
-            if (user.role !== 'ADMIN' && user.role !== 'SUPERADMIN') {
+            if (user.role !== 'ADMIN' && user.role !== 'SUPERADMIN' && user.role !== 'COMPANY_OWNER') {
                 return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
             }
 
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
             `).all(user.companyId || 1, `%${user.role}%`);
 
             // Check for pending leave requests count (Admins only)
-            if (user.role === 'ADMIN' || user.role === 'SUPERADMIN') {
+            if (user.role === 'ADMIN' || user.role === 'SUPERADMIN' || user.role === 'COMPANY_OWNER') {
                 const pendingCount = db.prepare("SELECT COUNT(*) as count FROM LeaveRequest WHERE status = 'PENDING' AND (SELECT companyId FROM Employee WHERE id = employeeId) = ?")
                     .get(user.companyId || 1) as { count: number };
 
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const user = session;
-    if (user.role !== 'ADMIN' && user.role !== 'SUPERADMIN') {
+    if (user.role !== 'ADMIN' && user.role !== 'SUPERADMIN' && user.role !== 'COMPANY_OWNER') {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -75,8 +75,8 @@ export async function POST(req: NextRequest) {
         const { title, message, type, href, targetRoles, category } = body;
 
         // RBAC: Admin can't create 'system' notifications
-        if (user.role === 'ADMIN' && (category === 'system' || category === 'wa')) {
-            return NextResponse.json({ error: 'Admin cannot create system notifications' }, { status: 403 });
+        if ((user.role === 'ADMIN' || user.role === 'COMPANY_OWNER') && (category === 'system' || category === 'wa')) {
+            return NextResponse.json({ error: 'Hanya Superadmin yang dapat membuat notifikasi sistem' }, { status: 403 });
         }
 
         const stmt = db.prepare(`
@@ -106,7 +106,7 @@ export async function PUT(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const user = session;
-    if (user.role !== 'ADMIN' && user.role !== 'SUPERADMIN') {
+    if (user.role !== 'ADMIN' && user.role !== 'SUPERADMIN' && user.role !== 'COMPANY_OWNER') {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -121,8 +121,8 @@ export async function PUT(req: NextRequest) {
         if (!existing) return NextResponse.json({ error: 'Notification not found' }, { status: 404 });
 
         // RBAC: Admin can't edit system/wa notifications
-        if (user.role === 'ADMIN' && (existing.category === 'system' || existing.category === 'wa')) {
-            return NextResponse.json({ error: 'Admin cannot modify system notifications' }, { status: 403 });
+        if ((user.role === 'ADMIN' || user.role === 'COMPANY_OWNER') && (existing.category === 'system' || existing.category === 'wa')) {
+            return NextResponse.json({ error: 'Hanya Superadmin yang dapat mengubah notifikasi sistem' }, { status: 403 });
         }
 
         const stmt = db.prepare(`
@@ -147,7 +147,7 @@ export async function DELETE(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const user = session;
-    if (user.role !== 'ADMIN' && user.role !== 'SUPERADMIN') {
+    if (user.role !== 'ADMIN' && user.role !== 'SUPERADMIN' && user.role !== 'COMPANY_OWNER') {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -163,8 +163,8 @@ export async function DELETE(req: NextRequest) {
         if (!existing) return NextResponse.json({ error: 'Notification not found' }, { status: 404 });
 
         // RBAC: Admin can't delete system/wa notifications
-        if (user.role === 'ADMIN' && (existing.category === 'system' || existing.category === 'wa')) {
-            return NextResponse.json({ error: 'Admin cannot delete system notifications' }, { status: 403 });
+        if ((user.role === 'ADMIN' || user.role === 'COMPANY_OWNER') && (existing.category === 'system' || existing.category === 'wa')) {
+            return NextResponse.json({ error: 'Hanya Superadmin yang dapat menghapus notifikasi sistem' }, { status: 403 });
         }
 
         db.prepare('DELETE FROM Notification WHERE id = ? AND companyId = ?').run(id, user.companyId || 1);

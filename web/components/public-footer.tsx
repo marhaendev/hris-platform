@@ -18,9 +18,10 @@ export function PublicFooter() {
                     <div className="space-y-6">
                         <div className="relative h-12 w-32 opacity-90">
                             <Image
-                                src="/logo.png"
+                                src="/icon.png"
                                 alt="HRIS Logo"
                                 fill
+                                sizes="128px"
                                 className="object-contain object-left"
                             />
                         </div>

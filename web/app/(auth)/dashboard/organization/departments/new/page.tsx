@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,21 +33,18 @@ export default function NewDepartmentPage() {
 
     const { t } = useLanguage();
 
-    const STANDARD_DEPARTMENTS = [
-        { name: "Human Resources", code: "HR" },
-        { name: "Finance", code: "FIN" },
-        { name: "Information Technology", code: "IT" },
-        { name: "Marketing", code: "MKT" },
-        { name: "Sales", code: "SLS" },
-        { name: "Operations", code: "OPS" },
-        { name: "Legal", code: "LGL" },
-        { name: "Customer Support", code: "CS" },
-        { name: "Research & Development", code: "R&D" },
-        { name: "Product Management", code: "PM" },
-        { name: "Administration", code: "ADM" },
-        { name: "Procurement", code: "PRO" },
-        { name: "Business Development", code: "BD" },
-    ];
+    const [suggestions, setSuggestions] = useState<any[]>([]);
+
+    useEffect(() => {
+        fetch('/api/admin/master-departments')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setSuggestions(data);
+                }
+            })
+            .catch(err => console.error("Failed to load master departments", err));
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -125,10 +122,10 @@ export default function NewDepartmentPage() {
                                                     <Plus className="h-4 w-4" /> {t?.organization?.new?.createNew || 'Buat baru (Ketik dan tekan Enter)'}
                                                 </div>
                                             </CommandEmpty>
-                                            <CommandGroup heading={t?.organization?.new?.suggestions || 'Saran Departemen'}>
-                                                {STANDARD_DEPARTMENTS.map((dept) => (
+                                            <CommandGroup heading={t?.organization?.new?.suggestions || 'Saran Departemen (Master Data)'}>
+                                                {suggestions.map((dept) => (
                                                     <CommandItem
-                                                        key={dept.code}
+                                                        key={dept.id || dept.code}
                                                         value={dept.name}
                                                         onSelect={(currentValue) => {
                                                             setForm({ name: dept.name, code: dept.code });

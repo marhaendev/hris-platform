@@ -11,6 +11,9 @@ import { CalendarCheck, Hourglass, Timer, UserCircle, ArrowUpRight } from 'lucid
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+import { CalendarWidget } from "@/components/dashboard/CalendarWidget";
+import { UserPlus, UserX, FileClock, FileCheck, FileX } from "lucide-react";
+
 interface DashboardStats {
     totalEmployees: number;
     departments: { active: number; total: number };
@@ -31,6 +34,21 @@ interface DashboardStats {
         absent: number;
         total: number;
     };
+    leaveStats?: {
+        pending: number;
+        approved: number;
+        rejected: number;
+    };
+    employeeStats?: {
+        total: number;
+        newThisMonth: number;
+    };
+    calendarEvents?: {
+        title: string;
+        start: string;
+        end: string;
+        type: 'leave' | 'holiday';
+    }[];
 }
 
 export default function Dashboard() {
@@ -51,8 +69,6 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                // Keep loading true only on first load if desired, but for chart switch it's better to show loading state or skeletal
-                // For now, let's just fetch
                 const res = await fetch(`/api/dashboard/stats?range=${chartRange}`);
                 if (res.ok) {
                     const data = await res.json();
@@ -229,7 +245,9 @@ export default function Dashboard() {
             {/* Stats Grid - Only show for ADMIN/SUPERADMIN */}
             {['ADMIN', 'SUPERADMIN', 'COMPANY_OWNER'].includes(user?.role || '') && (
                 <>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                    {/* Main Stats Row */}
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+                        {/* Enhanced Employee Stats */}
                         <Card className="shadow-sm border-slate-200">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium text-slate-600">{t.dashboard.stats.employees.title}</CardTitle>
@@ -237,12 +255,43 @@ export default function Dashboard() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">{loading ? "..." : stats.totalEmployees}</div>
-                                <p className="text-xs text-slate-500 mt-1">
-                                    {t.dashboard.stats.employees.desc}
-                                </p>
+                                {stats.employeeStats && stats.employeeStats.newThisMonth > 0 && (
+                                    <div className="flex items-center gap-1 mt-1 text-xs text-emerald-600 font-medium">
+                                        <UserPlus className="h-3 w-3" />
+                                        +{stats.employeeStats.newThisMonth} {t.dashboard.newEmployeeBadge}
+                                    </div>
+                                )}
+                                {!stats.employeeStats && (
+                                    <p className="text-xs text-slate-500 mt-1">{t.dashboard.stats.employees.desc}</p>
+                                )}
                             </CardContent>
                         </Card>
 
+                        {/* Payroll Stats */}
+                        <Card className="shadow-sm border-slate-200">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium text-slate-500">{t.dashboard.stats.payroll.title}</CardTitle>
+                                <Banknote className="h-4 w-4 text-green-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-lg font-bold text-green-700 tracking-tight">{loading ? "..." : formatCurrency(stats.totalPayroll)}</div>
+                                <p className="text-xs text-slate-500 mt-1">{t.dashboard.stats.payroll.desc}</p>
+                            </CardContent>
+                        </Card>
+
+                        {/* Attendance Today */}
+                        <Card className="shadow-sm border-slate-200">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium text-slate-500">{t.dashboard.stats.attendance.title}</CardTitle>
+                                <Clock className="h-4 w-4 text-orange-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-orange-600">{loading ? "..." : stats.presentToday}</div>
+                                <p className="text-xs text-slate-500 mt-1">{t.dashboard.stats.attendance.desc}</p>
+                            </CardContent>
+                        </Card>
+
+                        {/* Departments/Positions Combined or separate? Let's use Departments */}
                         <Card className="shadow-sm border-slate-200">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium text-slate-500">{t.dashboard.stats.departments.title}</CardTitle>
@@ -254,73 +303,65 @@ export default function Dashboard() {
                                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">
                                         {stats.departments.active} {t.dashboard.stats.departments.active}
                                     </span>
-                                    <span className="text-xs text-slate-400">
-                                        / {stats.departments.total} {t.dashboard.stats.departments.total}
-                                    </span>
                                 </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="shadow-sm border-slate-200">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium text-slate-500">{t.dashboard.stats.positions.title}</CardTitle>
-                                <Briefcase className="h-4 w-4 text-blue-500" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold text-blue-600">{loading ? "..." : stats.positions.total}</div>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700">
-                                        {stats.positions.active} {t.dashboard.stats.positions.active}
-                                    </span>
-                                    <span className="text-xs text-slate-400">
-                                        / {stats.positions.total} {t.dashboard.stats.positions.total}
-                                    </span>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="shadow-sm border-slate-200">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium text-slate-500">{t.dashboard.stats.attendance.title}</CardTitle>
-                                <Clock className="h-4 w-4 text-orange-500" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold text-orange-600">{loading ? "..." : stats.presentToday}</div>
-                                <p className="text-xs text-slate-500 mt-1">
-                                    {t.dashboard.stats.attendance.desc}
-                                </p>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="shadow-sm border-slate-200">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium text-slate-500">{t.dashboard.stats.payroll.title}</CardTitle>
-                                <Banknote className="h-4 w-4 text-green-500" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-lg font-bold text-green-700 tracking-tight">{loading ? "..." : formatCurrency(stats.totalPayroll)}</div>
-                                <p className="text-xs text-slate-500 mt-1">
-                                    {t.dashboard.stats.payroll.desc}
-                                </p>
                             </CardContent>
                         </Card>
                     </div>
+
+                    {/* New Leave Statistics Row */}
+                    <h3 className="text-lg font-semibold text-slate-700 mt-6 mb-2">{t.dashboard.leaveStats.title}</h3>
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <Card className="shadow-sm border-orange-100 bg-orange-50/30">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium text-orange-700">{t.dashboard.leaveStats.pending}</CardTitle>
+                                <FileClock className="h-4 w-4 text-orange-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-orange-600">{loading ? "..." : stats.leaveStats?.pending || 0}</div>
+                                <p className="text-xs text-orange-600/70 mt-1">{t.dashboard.leaveStats.pendingDesc}</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="shadow-sm border-emerald-100 bg-emerald-50/30">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium text-emerald-700">{t.dashboard.leaveStats.approved}</CardTitle>
+                                <FileCheck className="h-4 w-4 text-emerald-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-emerald-600">{loading ? "..." : stats.leaveStats?.approved || 0}</div>
+                                <p className="text-xs text-emerald-600/70 mt-1">{t.dashboard.leaveStats.approvedDesc}</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="shadow-sm border-rose-100 bg-rose-50/30">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium text-rose-700">{t.dashboard.leaveStats.rejected}</CardTitle>
+                                <FileX className="h-4 w-4 text-rose-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-rose-600">{loading ? "..." : stats.leaveStats?.rejected || 0}</div>
+                                <p className="text-xs text-rose-600/70 mt-1">{t.dashboard.leaveStats.rejectedDesc}</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
                 </>
             )}
 
-            {/* Attendance Chart & Recent Activity Grid */}
+            {/* Attendance Chart & Calendar Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 {/* Chart Area */}
                 <Card className={cn(
                     "shadow-sm border-slate-200",
-                    ['ADMIN', 'SUPERADMIN', 'COMPANY_OWNER'].includes(user?.role || '') ? "col-span-4" : "col-span-7"
+                    ['ADMIN', 'SUPERADMIN', 'COMPANY_OWNER'].includes(user?.role || '') ? "lg:col-span-4" : "lg:col-span-7"
                 )}>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardHeader className="flex flex-col items-start gap-4 space-y-0 md:flex-row md:items-center md:justify-between pb-2">
                         <div>
                             <CardTitle className="text-slate-800">{t.dashboard.attendanceChart.title}</CardTitle>
                             <CardDescription>{t.dashboard.attendanceChart.desc}</CardDescription>
                         </div>
-                        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+                        {/* Existing chart controls ... */}
+                        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg w-full md:w-auto overflow-x-auto justify-between md:justify-start">
                             <button
                                 onClick={() => setChartRange('week')}
                                 className={cn(
@@ -423,11 +464,6 @@ export default function Dashboard() {
                                                                 background: isZero ? 'rgb(241 245 249)' : 'transparent' // slate-100 if zero
                                                             }}
                                                         >
-                                                            {/* Present Segment (Bottom - but flex-col-reverse makes it visual bottom if we structure right, wait. flex-col-reverse puts first child at bottom. So Present first.) */}
-
-                                                            {/* Actually flex-col-reverse: First item is at bottom. */}
-                                                            {/* So I put Present first. */}
-
                                                             {!isZero && (
                                                                 <>
                                                                     <div
@@ -465,20 +501,23 @@ export default function Dashboard() {
                 </Card>
 
                 {['ADMIN', 'SUPERADMIN', 'COMPANY_OWNER'].includes(user?.role || '') && (
-                    <Card className="col-span-3 shadow-sm border-slate-200">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-slate-800">{t.dashboard.attendancePie.title}</CardTitle>
-                            <CardDescription>{t.dashboard.attendancePie.desc}</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <AttendancePieChart data={stats.todayAttendance} loading={loading} />
-                        </CardContent>
-                    </Card>
-                )}
+                    <div className="lg:col-span-3 h-full flex flex-col gap-4">
+                        {/* Attendance Pie - Keep if desired or replace? Keeping it but putting Calendar above it or below? */}
+                        {/* User wanted Calendar. Let's put Calendar here. And Pie Chart maybe move to bottom or keep. */}
+                        {/* Space is limited. col-span-3 is decent width. */}
 
-                {/* Recent Activity / Employees - Only for ADMIN */}
-                {['ADMIN', 'SUPERADMIN', 'COMPANY_OWNER'].includes(user?.role || '') && (
-                    <Card className="col-span-7 shadow-sm border-slate-200 mt-4">
+                        {/* Calendar Widget */}
+                        <div className="flex-1 min-h-[300px]">
+                            <CalendarWidget events={stats.calendarEvents || []} />
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Bottom Section: Recent Employees & Pie Chart (if didn't fit above) */}
+            {['ADMIN', 'SUPERADMIN', 'COMPANY_OWNER'].includes(user?.role || '') && (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                    <Card className="lg:col-span-5 shadow-sm border-slate-200">
                         <CardHeader className="flex flex-row items-center justify-between pb-4">
                             <CardTitle className="text-slate-800">{t.dashboard.recentEmployees.title}</CardTitle>
                             <Button variant="ghost" size="sm" asChild className="text-primary hover:text-primary hover:bg-primary/5 transition-all p-0 h-auto">
@@ -514,8 +553,18 @@ export default function Dashboard() {
                             </div>
                         </CardContent>
                     </Card>
-                )}
-            </div>
+
+                    <Card className="lg:col-span-2 shadow-sm border-slate-200">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-slate-800">{t.dashboard.attendancePie.title}</CardTitle>
+                            <CardDescription>{t.dashboard.attendancePie.desc}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <AttendancePieChart data={stats.todayAttendance} loading={loading} />
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
         </div>
     );
 }

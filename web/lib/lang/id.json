@@ -24,7 +24,12 @@
         "of": "dari",
         "prev": "Sebelumnya",
         "next": "Selanjutnya",
-        "data": "data"
+        "page": "Halaman",
+        "data": "data",
+        "position": "Posisi",
+        "department": "Departemen",
+        "generate": "Generate",
+        "print": "Cetak"
     },
     "nav": {
         "dashboard": "Dashboard",
@@ -44,7 +49,8 @@
         "shifts": "Shift & Jadwal",
         "payroll": "Penggajian",
         "payroll_generator": "Penggajian Otomatis",
-        "salary_employee": "Gaji Karyawan",
+        "payroll_dashboard": "Proses Gaji",
+        "salary_employee": "Gaji Pokok",
         "history": "Riwayat",
         "finance": "Keuangan",
         "settings": "Autentikasi",
@@ -63,7 +69,8 @@
         "master_departemen": "Departemen",
         "master_bank": "Bank",
         "master_payment": "Metode Bayar",
-        "companies": "Perusahaan"
+        "companies": "Perusahaan",
+        "org_chart": "Bagan Organisasi"
     },
     "aboutPage": {
         "title": "Tentang Aplikasi",
@@ -292,7 +299,83 @@
                 "title": "Data Statistik Tidak Tersedia",
                 "desc": "Akun Anda terdaftar sebagai karyawan, tetapi data kepegawaian tidak ditemukan. Hubungi admin untuk melengkapi profil Anda."
             }
+        },
+        "leaveStats": {
+            "title": "Statistik Cuti (Bulan Ini)",
+            "pending": "Menunggu Persetujuan",
+            "pendingDesc": "Permohonan perlu ditinjau",
+            "approved": "Disetujui",
+            "approvedDesc": "Karyawan cuti bulan ini",
+            "rejected": "Ditolak",
+            "rejectedDesc": "Permohonan ditolak bulan ini"
+        },
+        "newEmployeeBadge": "Karyawan Baru"
+    },
+    "payrollDashboard": {
+        "title": "Dashboard Penggajian",
+        "subtitle": "Kelola gaji, pajak PPh21, dan slip gaji karyawan.",
+        "process": "Proses Gaji",
+        "month": "Bulan",
+        "year": "Tahun",
+        "settings": "Pengaturan Gaji",
+        "stats": {
+            "netTotal": "Total Pembayaran Netto",
+            "netDesc": "Gaji bersih seluruh karyawan",
+            "pphTotal": "Total PPh21 Terhutang",
+            "pphDesc": "Estimasi pajak bulan ini",
+            "employeeCount": "Jumlah Karyawan",
+            "employeeDesc": "Diterima oleh {count} orang"
+        },
+        "historyTitle": "Riwayat Gaji",
+        "searchPlaceholder": "Cari nama atau departemen...",
+        "printAll": "Cetak Semua Slip",
+        "table": {
+            "employee": "Karyawan",
+            "baseSalary": "Gaji Pokok",
+            "deductions": "Potongan",
+            "pph21": "PPh21",
+            "net": "Netto",
+            "status": "Status",
+            "action": "Aksi"
+        },
+        "emptyPeriod": "Belum ada data untuk periode ini.",
+        "status": {
+            "paid": "LUNAS",
+            "draft": "DRAF",
+            "done": "Selesai",
+            "draftLower": "Draf"
+        },
+        "csvSuccess": "Download CSV berhasil",
+        "excelSuccess": "Download Excel berhasil",
+        "noDataExport": "Tidak ada data untuk diexport",
+        "noDataPrint": "Tidak ada data untuk dicetak"
+    },
+    "payrollSalaries": {
+        "title": "Pengaturan Gaji Pokok",
+        "subtitle": "Atur gaji pokok standar untuk setiap karyawan.",
+        "autoPayroll": "Update Massal",
+        "searchPlaceholder": "Cari nama karyawan...",
+        "allDepartments": "Semua Departemen",
+        "allPositions": "Semua Jabatan",
+        "editTitle": "Edit Gaji Pokok",
+        "saveSuccess": "Gaji berhasil diperbarui",
+        "saveError": "Gagal memperbarui gaji",
+        "autoTitle": "Update Gaji Massal",
+        "autoTypeDept": "Berdasarkan Departemen",
+        "autoTypePos": "Berdasarkan Jabatan",
+        "autoTargetPlaceholder": "Pilih target...",
+        "autoConfirm": "Update Semua",
+        "autoSuccess": "Update massal berhasil",
+        "autoError": "Gagal update massal",
+        "table": {
+            "employee": "Karyawan",
+            "department": "Departemen",
+            "position": "Jabatan",
+            "salary": "Gaji Pokok"
         }
+    },
+    "calendar": {
+        "today": "Hari Ini"
     },
     "user": {
         "addAccount": "Tambah Akun",
@@ -348,6 +431,46 @@
         },
         "toast": {
             "deleteSuccess": "Karyawan berhasil dihapus!"
+        }
+    },
+    "admins": {
+        "title": "Data Admin",
+        "subtitle": "Kelola akun administrator perusahaan.",
+        "add": "Tambah Admin",
+        "listTitle": "Daftar Administrator",
+        "searchPlaceholder": "Cari admin...",
+        "table": {
+            "name": "Nama",
+            "email": "Email",
+            "role": "Role",
+            "created": "Terdaftar Sejak"
+        },
+        "empty": "Belum ada data admin.",
+        "noMatch": "Tidak ada admin yang cocok.",
+        "deleteDialog": {
+            "title": "Hapus Admin?",
+            "description": "Akun admin ini akan dihapus secara permanen dan tidak dapat login lagi.",
+            "confirm": "Ya, Hapus"
+        }
+    },
+    "owners": {
+        "title": "Data Owner",
+        "subtitle": "Kelola akun pemilik perusahaan (Company Owners).",
+        "add": "Tambah Owner",
+        "listTitle": "Daftar Owner",
+        "searchPlaceholder": "Cari owner atau perusahaan...",
+        "table": {
+            "name": "Nama",
+            "contact": "Kontak",
+            "company": "Perusahaan",
+            "created": "Terdaftar Sejak"
+        },
+        "empty": "Belum ada data owner.",
+        "noMatch": "Tidak ada owner yang cocok.",
+        "deleteDialog": {
+            "title": "Hapus Owner?",
+            "description": "Akun owner ini akan dihapus secara permanen. Pastikan perusahaan ini masih memiliki akses atau owner lain.",
+            "confirm": "Ya, Hapus"
         }
     },
     "settings": {
@@ -508,7 +631,7 @@
         },
         "footer": {
             "desc": "Platform HRIS terdepan untuk efisiensi bisnis Anda.",
-            "copyright": "HRIS Systems",
+            "copyright": "HRIS",
             "created_by": "Dibuat oleh",
             "rights": "Hak cipta dilindungi.",
             "privacy": "Kebijakan Privasi",

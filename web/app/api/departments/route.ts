@@ -11,6 +11,9 @@ export async function GET(request: Request) {
 
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '10');
+        const search = searchParams.get('q') || '';
 
         if (id) {
             const stmt = db.prepare("SELECT * FROM Department WHERE id = ? AND companyId = ?");
@@ -21,6 +24,25 @@ export async function GET(request: Request) {
             return NextResponse.json(department);
         }
 
+        if (searchParams.get('all') === 'true') {
+            const departments = db.prepare("SELECT * FROM Department WHERE companyId = ? ORDER BY name ASC").all(session.companyId);
+            return NextResponse.json(departments);
+        }
+
+        const offset = (page - 1) * limit;
+
+        // Count total for pagination metadata
+        const countQuery = `
+            SELECT COUNT(*) as total 
+            FROM Department 
+            WHERE companyId = ? 
+            AND (name LIKE ? OR code LIKE ?)
+        `;
+        const totalResult = db.prepare(countQuery).get(session.companyId, `%${search}%`, `%${search}%`) as { total: number };
+        const total = totalResult.total;
+        const totalPages = Math.max(1, Math.ceil(total / limit));
+
+        // Get paginated data
         const departments = db.prepare(`
             SELECT 
                 d.*,
@@ -29,11 +51,21 @@ export async function GET(request: Request) {
             LEFT JOIN Position p ON d.id = p.departmentId
             LEFT JOIN Employee e ON p.id = e.positionId
             WHERE d.companyId = ?
+            AND (d.name LIKE ? OR d.code LIKE ?)
             GROUP BY d.id
-            ORDER BY employeeCount DESC, d.name ASC
-        `).all(session.companyId);
+            ORDER BY d.name ASC
+            LIMIT ? OFFSET ?
+        `).all(session.companyId, `%${search}%`, `%${search}%`, limit, offset);
 
-        return NextResponse.json(departments);
+        return NextResponse.json({
+            data: departments,
+            metadata: {
+                total,
+                page,
+                limit,
+                totalPages
+            }
+        });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -46,12 +78,41 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { name, code } = await request.json();
+        let { name, code } = await request.json();
+
+        if (!name) {
+            return NextResponse.json({ error: "Department name is required" }, { status: 400 });
+        }
 
         // Simple duplicate check per company (ONLY Check Name)
         const existing = db.prepare("SELECT id FROM Department WHERE name = ? AND companyId = ?").get(name, session.companyId);
         if (existing) {
             return NextResponse.json({ error: "Department name with this name already exists" }, { status: 400 });
+        }
+
+        // Auto-generate code if not provided
+        if (!code) {
+            const words = name.split(' ');
+            if (words.length === 1) {
+                code = words[0].substring(0, 3).toUpperCase();
+            } else {
+                code = words.map((w: string) => w[0]).join('').substring(0, 4).toUpperCase();
+            }
+
+            // Verify uniqueness of code
+            let isUnique = false;
+            let counter = 1;
+            let baseCode = code;
+
+            while (!isUnique) {
+                const existingCode = db.prepare("SELECT id FROM Department WHERE code = ? AND companyId = ?").get(code, session.companyId);
+                if (!existingCode) {
+                    isUnique = true;
+                } else {
+                    code = `${baseCode}${counter}`;
+                    counter++;
+                }
+            }
         }
 
         // Insert department

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/app/(auth)/DashboardClientLayout';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +17,7 @@ import { toast } from 'sonner';
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
+import { useLanguage } from '@/lib/contexts/LanguageContext';
 
 interface Admin {
     id: number;
@@ -29,6 +31,7 @@ export default function AdminUsersPage() {
     const [search, setSearch] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter(); // Add router definition
+    const { t } = useLanguage();
 
     // Dialog removed, actions updated to use router push
 
@@ -36,9 +39,20 @@ export default function AdminUsersPage() {
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
+    const userRole = useUser()?.role;
+
     useEffect(() => {
+        if (userRole && userRole !== 'COMPANY_OWNER' && userRole !== 'SUPERADMIN') {
+            router.push('/dashboard');
+            toast.error('Akses Ditolak: Hanya Owner yang dapat mengelola Admin');
+            return;
+        }
         fetchAdmins();
-    }, []);
+    }, [userRole]);
+
+    if (!userRole || (userRole !== 'COMPANY_OWNER' && userRole !== 'SUPERADMIN')) {
+        return null;
+    }
 
     const fetchAdmins = async () => {
         setIsLoading(true);
@@ -47,9 +61,6 @@ export default function AdminUsersPage() {
             const data = await res.json();
             setAdmins(Array.isArray(data) ? data : []);
         } catch (err) {
-            console.error(err);
-            toast.error('Gagal memuat data admin');
-        } finally {
             setIsLoading(false);
         }
     };
@@ -84,46 +95,63 @@ export default function AdminUsersPage() {
         a.email.toLowerCase().includes(search.toLowerCase())
     );
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search]);
+
+    const totalPages = Math.ceil(filteredAdmins.length / itemsPerPage) || 1;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedAdmins = filteredAdmins.slice(startIndex, endIndex);
+
     return (
-        <div className="space-y-6 p-8">
+        <div className="space-y-4 p-4 md:space-y-6 md:p-8">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-800">Data Admin</h2>
-                    <p className="text-slate-500">Kelola akun administrator perusahaan.</p>
+                    <h2 className="text-lg md:text-2xl font-bold tracking-tight text-slate-800">{t.admins.title}</h2>
+                    <p className="text-xs md:text-sm text-slate-500">{t.admins.subtitle}</p>
                 </div>
-                <Link href="/dashboard/users/admin/new">
-                    <Button className="bg-primary hover:bg-primary/90 text-white font-bold">
-                        <Plus className="mr-2 h-4 w-4" /> Tambah Admin
-                    </Button>
-                </Link>
+                {(userRole === 'COMPANY_OWNER' || userRole === 'SUPERADMIN') && (
+                    <Link href="/dashboard/users/admin/new" className="w-full md:w-auto">
+                        <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-bold h-9 text-xs md:h-10 md:text-sm">
+                            <Plus className="mr-2 h-3.5 w-3.5 md:h-4 md:w-4" /> {t.admins.add}
+                        </Button>
+                    </Link>
+                )}
             </div>
 
             <Card>
-                <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                        <CardTitle className="text-slate-800">Daftar Administrator</CardTitle>
-                        <div className="relative w-64">
-                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
+                <CardHeader className="pb-3 p-4 md:p-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <CardTitle className="text-base md:text-lg text-slate-800">{t.admins.listTitle}</CardTitle>
+                        <div className="relative w-full md:w-64">
+                            <Search className="absolute left-2 top-2.5 h-3.5 w-3.5 md:h-4 md:w-4 text-slate-400" />
                             <Input
-                                placeholder="Cari admin..."
-                                className="pl-8"
+                                placeholder={t.admins.searchPlaceholder}
+                                className="pl-8 h-9 text-xs md:h-10 md:text-sm"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent>
-                    <div className="rounded-md border">
+                <CardContent className="p-0 md:p-6 pt-0 md:pt-0">
+                    <div className="border-y md:border md:rounded-md overflow-x-auto">
                         <table className="min-w-full divide-y divide-slate-200">
                             <thead className="bg-slate-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Nama</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Email</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Role</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Terdaftar Sejak</th>
-                                    <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Aksi</th>
+                                    <th className="px-4 py-3 md:px-6 text-left text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wider">{t.admins.table.name}</th>
+                                    <th className="px-4 py-3 md:px-6 text-left text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wider hidden md:table-cell">{t.admins.table.email}</th>
+                                    <th className="px-4 py-3 md:px-6 text-left text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wider">{t.admins.table.role}</th>
+                                    <th className="px-4 py-3 md:px-6 text-left text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wider hidden sm:table-cell">{t.admins.table.created}</th>
+                                    {(userRole === 'COMPANY_OWNER' || userRole === 'SUPERADMIN') && (
+                                        <th className="px-4 py-3 md:px-6 text-right text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wider">{t.common.actions}</th>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-slate-200">
@@ -137,81 +165,111 @@ export default function AdminUsersPage() {
                                     </tr>
                                 ) : filteredAdmins.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-500">
-                                            {search ? 'Tidak ada admin yang cocok.' : 'Belum ada data admin.'}
+                                        <td colSpan={5} className="px-6 py-8 text-center text-xs md:text-sm text-slate-500">
+                                            {search ? t.admins.noMatch : t.admins.empty}
                                         </td>
                                     </tr>
                                 ) : (
-                                    filteredAdmins.map((admin) => (
+                                    paginatedAdmins.map((admin) => (
                                         <tr key={admin.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => router.push(`/dashboard/users/admin/${admin.id}`)}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-3">
-                                                    <Avatar className="h-9 w-9 bg-primary/10 text-primary">
-                                                        <AvatarFallback className="font-bold">
+                                                    <Avatar className="h-8 w-8 md:h-9 md:w-9 bg-primary/10 text-primary">
+                                                        <AvatarFallback className="font-bold text-xs md:text-sm">
                                                             {admin.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                                                         </AvatarFallback>
                                                     </Avatar>
-                                                    <div className="font-medium text-slate-900">{admin.name}</div>
+                                                    <div className="flex flex-col">
+                                                        <div className="font-medium text-slate-900 text-xs md:text-sm">{admin.name}</div>
+                                                        <div className="text-[10px] text-slate-500 md:hidden">{admin.email}</div>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                            <td className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm text-slate-500 hidden md:table-cell">
                                                 <div className="flex items-center gap-2">
                                                     <Mail className="h-3.5 w-3.5 text-slate-400" />
                                                     {admin.email}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200">
+                                            <td className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200 text-[10px] md:text-xs">
                                                     <ShieldCheck className="mr-1 h-3 w-3" />
                                                     Admin
                                                 </Badge>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                            <td className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm text-slate-500 hidden sm:table-cell">
                                                 <div className="flex items-center gap-2">
                                                     <Calendar className="h-3.5 w-3.5 text-slate-400" />
                                                     {admin.createdAt ? format(new Date(admin.createdAt), 'dd MMMM yyyy', { locale: idLocale }) : '-'}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                                        <Button variant="ghost" className="h-8 w-8 p-0">
-                                                            <span className="sr-only">Open menu</span>
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                                                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/users/admin/${admin.id}`); }}>
-                                                            <Edit className="mr-2 h-4 w-4" /> Edit
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            className="text-red-600 focus:text-red-600"
-                                                            onClick={(e) => { e.stopPropagation(); handleDelete(admin.id); }}
-                                                        >
-                                                            <Trash2 className="mr-2 h-4 w-4" /> Hapus
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </td>
+                                            {(userRole === 'COMPANY_OWNER' || userRole === 'SUPERADMIN') && (
+                                                <td className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap text-right text-sm">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                <span className="sr-only">Open menu</span>
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuLabel>{t.common.actions}</DropdownMenuLabel>
+                                                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/users/admin/${admin.id}`); }}>
+                                                                <Edit className="mr-2 h-4 w-4" /> {t.common.edit}
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                className="text-red-600 focus:text-red-600"
+                                                                onClick={(e) => { e.stopPropagation(); handleDelete(admin.id); }}
+                                                            >
+                                                                <Trash2 className="mr-2 h-4 w-4" /> {t.common.delete}
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))
                                 )}
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Pagination Controls */}
+                    {!isLoading && filteredAdmins.length > 0 && (
+                        <div className="flex items-center justify-between pt-4 px-4 md:px-0">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                                className="h-8 text-xs md:text-sm"
+                            >
+                                {t.common.prev}
+                            </Button>
+                            <span className="text-xs md:text-sm text-slate-500">
+                                {t.common.page} {currentPage} {t.common.of} {totalPages}
+                            </span>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={currentPage >= totalPages}
+                                className="h-8 text-xs md:text-sm"
+                            >
+                                {t.common.next}
+                            </Button>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
-
-            {/* Edit Dialog Removed */}
 
             {/* Delete Confirm Dialog */}
             <ConfirmDialog
                 open={deleteConfirmOpen}
                 onOpenChange={setDeleteConfirmOpen}
-                title="Hapus Admin?"
-                description="Akun admin ini akan dihapus secara permanen dan tidak dapat login lagi."
-                confirmText="Ya, Hapus"
+                title={t.admins.deleteDialog.title}
+                description={t.admins.deleteDialog.description}
+                confirmText={t.admins.deleteDialog.confirm}
                 variant="danger"
                 onConfirm={confirmDelete}
             />

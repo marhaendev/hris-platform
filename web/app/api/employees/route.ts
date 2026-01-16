@@ -3,24 +3,43 @@ import db from '@/lib/db';
 import { hashPassword } from '@/lib/auth';
 import { getSession } from '@/lib/session';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
         const session = await getSession();
         if (!session || !session.companyId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const stmt = db.prepare(`
+        const { searchParams } = new URL(request.url);
+        const departmentId = searchParams.get('departmentId');
+        const positionId = searchParams.get('positionId');
+
+        let query = `
             SELECT e.*, u.name, u.email, u.username, u.phone, d.name as departmentName, p.title as positionTitle
             FROM Employee e 
             JOIN User u ON e.userId = u.id
             LEFT JOIN Department d ON e.departmentId = d.id
             LEFT JOIN Position p ON e.positionId = p.id
             WHERE e.companyId = ?
-            AND u.role NOT IN('ADMIN', 'SUPERADMIN')
-            ORDER BY e.id ASC
-            `);
-        const employees = stmt.all(session.companyId);
+            AND u.role != 'SUPERADMIN'
+        `;
+
+        const params: any[] = [session.companyId];
+
+        if (departmentId) {
+            query += " AND e.departmentId = ?";
+            params.push(departmentId);
+        }
+
+        if (positionId) {
+            query += " AND e.positionId = ?";
+            params.push(positionId);
+        }
+
+        query += " ORDER BY e.id ASC";
+
+        const stmt = db.prepare(query);
+        const employees = stmt.all(...params);
 
         const formatted = employees.map((emp: any) => ({
             id: emp.id,

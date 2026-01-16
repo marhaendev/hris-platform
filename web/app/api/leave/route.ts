@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
             WHERE 1=1
         `;
 
-        if (session.role === 'ADMIN') {
+        if (session.role === 'ADMIN' || session.role === 'COMPANY_OWNER') {
             queryBase += ` AND u.role != 'SUPERADMIN' `;
         }
         const params: any[] = [];

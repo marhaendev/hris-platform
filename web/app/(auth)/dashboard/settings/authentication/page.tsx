@@ -30,19 +30,26 @@ export default function SettingsPage() {
     const { t } = useLanguage();
 
     useEffect(() => {
-        if (user && user.role !== 'ADMIN' && user.role !== 'SUPERADMIN' && user.role !== 'COMPANY_OWNER') {
+        if (user && !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
             router.push('/dashboard');
+            toast.error("Akses Ditolak: Anda tidak memiliki izin");
             return;
         }
 
-        fetch('/api/system/settings')
-            .then(res => res.json())
-            .then(data => {
-                setSettings(data);
-                setIsLoading(false);
-            })
-            .catch(err => setIsLoading(false));
+        if (user && ['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+            fetch('/api/system/settings')
+                .then(res => res.json())
+                .then(data => {
+                    setSettings(data);
+                    setIsLoading(false);
+                })
+                .catch(err => setIsLoading(false));
+        }
     }, [user, router]);
+
+    if (!user || !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+        return null;
+    }
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -78,7 +85,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between space-y-2">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight text-slate-900">{t.settings.title}</h2>
-                    <p className="text-slate-500">{t.settings.subtitle} (Konfigurasi Per-Perusahaan)</p>
+                    <p className="text-slate-500">Kelola konfigurasi autentikasi</p>
                 </div>
             </div>
 

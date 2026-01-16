@@ -91,15 +91,15 @@ export default function NotificationManagementPage() {
     );
 
     return (
-        <div className="p-8 space-y-8">
-            <div className="flex items-center justify-between">
+        <div className="p-4 md:p-8 space-y-6 md:space-y-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-800 flex items-center gap-3">
-                        <Bell className="h-8 w-8 text-primary" /> {t.notification_mgmt.title}
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-800 flex items-center gap-3">
+                        <Bell className="h-6 w-6 md:h-8 md:w-8 text-primary" /> {t.notification_mgmt.title}
                     </h2>
-                    <p className="text-slate-500 font-medium italic">{t.notification_mgmt.subtitle}</p>
+                    <p className="text-sm md:text-base text-slate-500 font-medium italic">{t.notification_mgmt.subtitle}</p>
                 </div>
-                <Button asChild className="gap-2 rounded-xl font-bold shadow-lg shadow-primary/20">
+                <Button asChild className="w-full md:w-auto gap-2 rounded-xl font-bold shadow-lg shadow-primary/20">
                     <Link href="/dashboard/settings/notifications/new">
                         <Plus className="h-4 w-4" /> {t.notification_mgmt.add}
                     </Link>
@@ -111,11 +111,11 @@ export default function NotificationManagementPage() {
                     <Table>
                         <TableHeader className="bg-slate-50/50">
                             <TableRow className="border-slate-100">
-                                <TableHead className="w-[300px] text-xs font-black text-slate-400 uppercase tracking-widest py-6 px-8">{t.notification_mgmt.table.header.content}</TableHead>
-                                <TableHead className="text-xs font-black text-slate-400 uppercase tracking-widest py-6">{t.notification_mgmt.table.header.category}</TableHead>
-                                <TableHead className="text-xs font-black text-slate-400 uppercase tracking-widest py-6">{t.notification_mgmt.table.header.target}</TableHead>
-                                <TableHead className="text-xs font-black text-slate-400 uppercase tracking-widest py-6">{t.notification_mgmt.table.header.status}</TableHead>
-                                <TableHead className="text-right text-xs font-black text-slate-400 uppercase tracking-widest py-6 px-8">{t.notification_mgmt.table.header.actions}</TableHead>
+                                <TableHead className="w-full md:w-[300px] text-xs font-black text-slate-400 uppercase tracking-widest py-4 md:py-6 px-4 md:px-8">{t.notification_mgmt.table.header.content}</TableHead>
+                                <TableHead className="hidden md:table-cell text-xs font-black text-slate-400 uppercase tracking-widest py-6">{t.notification_mgmt.table.header.category}</TableHead>
+                                <TableHead className="hidden md:table-cell text-xs font-black text-slate-400 uppercase tracking-widest py-6">{t.notification_mgmt.table.header.target}</TableHead>
+                                <TableHead className="hidden md:table-cell text-xs font-black text-slate-400 uppercase tracking-widest py-6">{t.notification_mgmt.table.header.status}</TableHead>
+                                <TableHead className="text-right text-xs font-black text-slate-400 uppercase tracking-widest py-4 md:py-6 px-4 md:px-8">{t.notification_mgmt.table.header.actions}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -136,7 +136,7 @@ export default function NotificationManagementPage() {
                             ) : (
                                 notifications.map((notif) => (
                                     <TableRow key={notif.id} className="group border-slate-50 hover:bg-slate-50/50 transition-colors">
-                                        <TableCell className="py-6 px-8">
+                                        <TableCell className="py-4 px-4 md:py-6 md:px-8">
                                             <div className="flex gap-4">
                                                 <div className={cn(
                                                     "h-10 w-10 shrink-0 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110",
@@ -146,13 +146,31 @@ export default function NotificationManagementPage() {
                                                 )}>
                                                     {notif.category === 'system' || notif.category === 'wa' ? <ShieldAlert className="h-5 w-5" /> : <Megaphone className="h-5 w-5" />}
                                                 </div>
-                                                <div className="space-y-1 overflow-hidden">
+                                                <div className="space-y-1 overflow-hidden flex-1">
                                                     <p className="font-black text-slate-900 leading-tight group-hover:text-primary transition-colors">{notif.title}</p>
                                                     <p className="text-xs text-slate-500 line-clamp-2 italic font-medium">{notif.message}</p>
+
+                                                    {/* Mobile Only Metadata */}
+                                                    <div className="flex flex-wrap items-center gap-2 mt-2 md:hidden">
+                                                        <Badge variant="outline" className={cn(
+                                                            "rounded-lg px-2 text-[10px] font-black uppercase tracking-wider h-5",
+                                                            notif.category === 'system' || notif.category === 'wa'
+                                                                ? "bg-red-50 text-red-500 border-red-100"
+                                                                : "bg-slate-100 text-slate-500 border-slate-200"
+                                                        )}>
+                                                            {notif.category}
+                                                        </Badge>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <div className={cn("h-1.5 w-1.5 rounded-full", notif.isActive ? "bg-emerald-500" : "bg-slate-300")} />
+                                                            <span className={cn("text-[10px] font-bold", notif.isActive ? "text-emerald-600" : "text-slate-400")}>
+                                                                {notif.isActive ? "Aktif" : "Nonaktif"}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="hidden md:table-cell">
                                             <Badge variant="outline" className={cn(
                                                 "rounded-lg px-2 text-[10px] font-black uppercase tracking-wider",
                                                 notif.category === 'system' || notif.category === 'wa'
@@ -162,14 +180,14 @@ export default function NotificationManagementPage() {
                                                 {notif.category}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="hidden md:table-cell">
                                             <div className="flex flex-wrap gap-1 max-w-[150px]">
                                                 {notif.targetRoles.split(',').map(r => (
                                                     <span key={r} className="text-[10px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded uppercase">{r.trim()}</span>
                                                 ))}
                                             </div>
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="hidden md:table-cell">
                                             <div className="flex items-center gap-2">
                                                 <div className={cn("h-2 w-2 rounded-full", notif.isActive ? "bg-emerald-500" : "bg-slate-300")} />
                                                 <span className={cn("text-xs font-bold", notif.isActive ? "text-emerald-600" : "text-slate-400")}>
@@ -177,13 +195,13 @@ export default function NotificationManagementPage() {
                                                 </span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-right px-8">
-                                            <div className="flex items-center justify-end gap-2">
+                                        <TableCell className="text-right px-4 md:px-8">
+                                            <div className="flex items-center justify-end gap-1 md:gap-2">
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
                                                     asChild
-                                                    className="h-9 w-9 rounded-xl hover:bg-primary/10 hover:text-primary"
+                                                    className="h-8 w-8 md:h-9 md:w-9 rounded-xl hover:bg-primary/10 hover:text-primary"
                                                 >
                                                     <Link href={`/dashboard/settings/notifications/${notif.id}/edit`}>
                                                         <Edit2 className="h-4 w-4" />
@@ -193,7 +211,7 @@ export default function NotificationManagementPage() {
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => handleDelete(notif.id)}
-                                                    className="h-9 w-9 rounded-xl hover:bg-red-50 hover:text-red-500"
+                                                    className="h-8 w-8 md:h-9 md:w-9 rounded-xl hover:bg-red-50 hover:text-red-500"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>

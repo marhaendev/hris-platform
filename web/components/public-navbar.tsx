@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Menu, LogIn, UserPlus } from "lucide-react";
+import { Menu, LogIn, UserPlus, Sparkles, HelpCircle } from "lucide-react";
 import { useLanguage } from "@/lib/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -53,21 +53,56 @@ export function PublicNavbar() {
                                     <Menu className="h-6 w-6 text-slate-700" />
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                                <div className="flex flex-col gap-6 mt-8 font-headline">
-                                    <button onClick={() => handleNav('features')} className="text-left text-xl text-slate-600 hover:text-primary transition-colors">{t.landing.nav.features}</button>
-                                    <button onClick={() => handleNav('faq')} className="text-left text-xl text-slate-600 hover:text-primary transition-colors">{t.landing.nav.faq}</button>
-                                    <hr className="border-slate-200" />
-                                    <div className="flex flex-col gap-4">
-                                        <Link href="/login" className="w-full">
-                                            <Button className="w-full text-lg shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white">{t.landing.nav.login}</Button>
-                                        </Link>
+                            <SheetContent side="left" className="flex flex-col w-64 p-0 bg-white border-r-slate-200 h-full">
+                                {/* Header with Logo */}
+                                <div className="flex h-16 items-center px-6 border-b border-slate-100">
+                                    <Link href="/" className="relative h-10 w-32">
+                                        <Image
+                                            src="/icon.png"
+                                            alt="HRIS Logo"
+                                            fill
+                                            sizes="128px"
+                                            className="object-contain object-left"
+                                            priority
+                                        />
+                                    </Link>
+                                </div>
+
+                                {/* Scrollable Content */}
+                                <div className="flex-1 overflow-y-auto py-6 px-3">
+                                    {/* Navigation Links with Icons */}
+                                    <nav className="flex flex-col gap-1">
+                                        <button
+                                            onClick={() => handleNav('features')}
+                                            className="flex items-center gap-3 text-left text-sm px-4 py-2 text-slate-600 hover:text-primary hover:bg-slate-50 rounded-lg transition-all font-medium"
+                                        >
+                                            <Sparkles className="h-4 w-4 text-slate-500" />
+                                            <span>{t.landing.nav.features}</span>
+                                        </button>
+                                        <button
+                                            onClick={() => handleNav('faq')}
+                                            className="flex items-center gap-3 text-left text-sm px-4 py-2 text-slate-600 hover:text-primary hover:bg-slate-50 rounded-lg transition-all font-medium"
+                                        >
+                                            <HelpCircle className="h-4 w-4 text-slate-500" />
+                                            <span>{t.landing.nav.faq}</span>
+                                        </button>
+                                    </nav>
+                                </div>
+
+                                {/* Footer - Language & Login */}
+                                <div className="border-t border-slate-100 p-4 relative">
+                                    <div className="mb-4 flex items-center justify-between px-2">
+                                        <span className="text-xs font-bold text-slate-400 tracking-wider font-ui">{t.common.changeLanguage || "Bahasa"}</span>
+                                        <LanguageSwitcher mode="mobile" className="w-auto" size="small" />
                                     </div>
-                                    <hr className="border-slate-100 my-2" />
-                                    <div className="px-2">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Pilih Bahasa / Select Language</p>
-                                        <LanguageSwitcher mode="mobile" />
-                                    </div>
+
+                                    {/* Login Button */}
+                                    <Link href="/login" className="w-full block">
+                                        <Button className="w-full shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white flex items-center gap-2 justify-center">
+                                            <LogIn className="h-4 w-4" />
+                                            {t.landing.nav.login}
+                                        </Button>
+                                    </Link>
                                 </div>
                             </SheetContent>
                         </Sheet>
@@ -76,9 +111,10 @@ export function PublicNavbar() {
                     <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105 active:scale-95">
                         <div className={`relative transition-all duration-500 ${isScrolled ? "h-8 w-8" : "h-10 w-32"}`}>
                             <Image
-                                src="/logo.png"
+                                src="/icon.png"
                                 alt="HRIS Logo"
                                 fill
+                                sizes="(max-width: 768px) 32px, 128px"
                                 className={`object-contain ${isScrolled ? "object-center" : "object-left"}`}
                                 priority
                             />

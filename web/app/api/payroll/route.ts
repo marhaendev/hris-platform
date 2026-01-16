@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { calculatePPh21, calculateBPJS } from '@/lib/utils/payroll/tax';
+import { getSession } from '@/lib/session';
 
 export async function GET(request: Request) {
     try {
+        const session = await getSession();
+        if (!session || !session.companyId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
         const { searchParams } = new URL(request.url);
         const month = searchParams.get('month');
         const year = searchParams.get('year');
@@ -14,12 +18,13 @@ export async function GET(request: Request) {
             JOIN Employee e ON p.employeeId = e.id
             JOIN User u ON e.userId = u.id
             LEFT JOIN Department d ON e.departmentId = d.id
+            WHERE e.companyId = ?
         `;
-        const params: any[] = [];
+        const params: any[] = [session.companyId];
 
         if (month && year) {
             const periodDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-            query += ` WHERE p.period = ? `;
+            query += ` AND p.period = ? `;
             params.push(periodDate.toISOString());
         }
 
@@ -54,6 +59,14 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
+        const session = await getSession();
+        if (!session || !session.companyId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+        // Only Admin, Owner, Superadmin
+        if (session.role === 'EMPLOYEE' || session.role === 'STAFF') {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
         const body = await request.json();
         const { month, year } = body;
 
@@ -65,18 +78,19 @@ export async function POST(request: Request) {
         const periodStr = periodDate.toISOString();
 
         // 1. Fetch Global Settings
-        const rawSettings = db.prepare('SELECT key, value FROM PayrollSetting WHERE companyId = 1').all() as any[];
+        const rawSettings = db.prepare('SELECT key, value FROM PayrollSetting WHERE companyId = ?').all(session.companyId) as any[];
         const settings: any = {};
         rawSettings.forEach(s => {
             settings[s.key] = parseFloat(s.value);
         });
 
-        // Get all employees with their specific tax/bpjs settings
+        // Get all employees for this company with their specific tax/bpjs settings
         const employees = db.prepare(`
             SELECT e.*, u.name 
             FROM Employee e
             JOIN User u ON e.userId = u.id
-        `).all() as any[];
+            WHERE e.companyId = ?
+        `).all(session.companyId) as any[];
 
         const insertPayroll = db.prepare(`
             INSERT INTO Payroll (

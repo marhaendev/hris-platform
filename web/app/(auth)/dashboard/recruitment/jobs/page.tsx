@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/app/(auth)/DashboardClientLayout';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Briefcase, Plus, Search, MapPin, DollarSign, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
 interface JobPosting {
@@ -20,6 +23,8 @@ interface JobPosting {
 }
 
 export default function JobsListPage() {
+    const user = useUser();
+    const router = useRouter();
     const [jobs, setJobs] = useState<JobPosting[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("ALL");
@@ -28,6 +33,17 @@ export default function JobsListPage() {
     const [limit, setLimit] = useState(20);
     const [metadata, setMetadata] = useState({ total: 0, totalPages: 1 });
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (user && !['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(user.role)) {
+            router.push('/dashboard');
+            toast.error("Akses Ditolak: Anda tidak memiliki izin");
+        }
+    }, [user, router]);
+
+    if (!user || !['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(user.role)) {
+        return null;
+    }
 
     // Debounce search
     useEffect(() => {

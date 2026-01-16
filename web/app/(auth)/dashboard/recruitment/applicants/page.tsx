@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/app/(auth)/DashboardClientLayout';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { User, Search, Mail, Phone, Briefcase, Calendar } from 'lucide-react';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
 interface Applicant {
@@ -32,12 +35,25 @@ const STATUS_CONFIG = {
 };
 
 export default function ApplicantsPage() {
+    const user = useUser();
+    const router = useRouter();
     const [applicants, setApplicants] = useState<Applicant[]>([]);
     const [filteredApplicants, setFilteredApplicants] = useState<Applicant[]>([]);
     const [jobs, setJobs] = useState<Record<number, JobPosting>>({});
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("ALL");
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (user && !['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(user.role)) {
+            router.push('/dashboard');
+            toast.error("Akses Ditolak: Anda tidak memiliki izin");
+        }
+    }, [user, router]);
+
+    if (!user || !['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(user.role)) {
+        return null; // Prevent Fouc
+    }
 
     useEffect(() => {
         fetchData();

@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/app/(auth)/DashboardClientLayout';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Users, Calendar, Plus, TrendingUp } from 'lucide-react';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
 interface JobPosting {
@@ -15,6 +18,8 @@ interface JobPosting {
 }
 
 export default function RecruitmentDashboard() {
+    const user = useUser();
+    const router = useRouter();
     const [stats, setStats] = useState({
         openJobs: 0,
         totalApplicants: 0,
@@ -22,6 +27,17 @@ export default function RecruitmentDashboard() {
     });
     const [recentJobs, setRecentJobs] = useState<JobPosting[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (user && !['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(user.role)) {
+            router.push('/dashboard');
+            toast.error("Akses Ditolak: Anda tidak memiliki izin");
+        }
+    }, [user, router]);
+
+    if (!user || !['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(user.role)) {
+        return null;
+    }
 
     useEffect(() => {
         fetchData();
@@ -157,8 +173,8 @@ export default function RecruitmentDashboard() {
                                             </div>
                                         </div>
                                         <span className={`text-xs px-2 py-1 rounded-full ${job.status === 'OPEN' ? 'bg-green-100 text-green-700' :
-                                                job.status === 'CLOSED' ? 'bg-red-100 text-red-700' :
-                                                    'bg-gray-100 text-gray-700'
+                                            job.status === 'CLOSED' ? 'bg-red-100 text-red-700' :
+                                                'bg-gray-100 text-gray-700'
                                             }`}>
                                             {job.status}
                                         </span>

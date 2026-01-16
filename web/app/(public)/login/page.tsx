@@ -11,6 +11,7 @@ import { ArrowLeft, KeyRound, Mail, Zap, CheckCircle2, ShieldCheck, Star, Smartp
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PublicNavbar } from "@/components/public-navbar";
+import { PublicFooter } from "@/components/public-footer";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     Dialog,
@@ -198,14 +199,14 @@ export default function LoginPage() {
 
 
             {/* Left Side: Form */}
-            <div className="relative flex w-full flex-col items-center justify-center p-4 md:p-8 lg:px-12 lg:pt-4 lg:pb-40 lg:h-full lg:overflow-hidden overflow-y-auto">
+            <div className="relative flex w-full flex-col items-center justify-between md:justify-center md:p-8 lg:px-12 lg:pt-4 lg:pb-40 lg:h-full lg:overflow-hidden overflow-y-auto min-h-screen lg:min-h-0 bg-white">
                 {/* Background Decoration */}
                 <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none sticky top-0">
                     <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary blur-[120px]"></div>
                 </div>
 
-                <div className="relative z-10 flex w-full max-w-md flex-col animate-fade-in lg:min-h-[520px]">
-                    <div className="mb-2">
+                <div className="relative z-10 flex w-full max-w-md flex-col animate-fade-in lg:min-h-[520px] my-auto px-4 pt-24 md:pt-0 pb-8 md:px-0">
+                    <div className="mb-2 hidden lg:block">
                         <Link href="/">
                             <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-600 font-bold gap-2 p-0 h-auto hover:bg-transparent transition-colors text-xs uppercase tracking-wider">
                                 <ArrowLeft className="h-3.5 w-3.5" /> Kembali
@@ -509,12 +510,11 @@ export default function LoginPage() {
                             )}
                         </Button>
                     </form>
+                </div>
 
-                    {/* Registration section removed as per user request */}
-
-
-
-
+                {/* Footer for Mobile */}
+                <div className="mt-8 lg:hidden w-full">
+                    <PublicFooter />
                 </div>
             </div>
 

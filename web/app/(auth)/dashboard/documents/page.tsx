@@ -4,12 +4,17 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FileText, Download, Search, User } from 'lucide-react';
+import { FileText, Download, Search, User, Eye } from 'lucide-react';
+import { DocumentPreviewModal } from '@/components/DocumentPreviewModal';
 
 export default function DocumentsPage() {
     const [documents, setDocuments] = useState<any[]>([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+
+    // Preview State
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [selectedDoc, setSelectedDoc] = useState<{ id: string | number; title: string } | null>(null);
 
     useEffect(() => {
         // Fetch all documents. Since we don't have a specific ALL docs API yet, I might need to create one or reuse.
@@ -87,11 +92,23 @@ export default function DocumentsPage() {
                                             {new Date(doc.uploadedAt).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                            <Button variant="ghost" size="icon" asChild>
-                                                <a href={doc.fileUrl} target="_blank" download>
-                                                    <Download className="h-4 w-4 text-slate-400 hover:text-blue-600" />
-                                                </a>
-                                            </Button>
+                                            <div className="flex justify-end gap-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => {
+                                                        setSelectedDoc({ id: doc.id, title: doc.title });
+                                                        setPreviewOpen(true);
+                                                    }}
+                                                >
+                                                    <Eye className="h-4 w-4 text-slate-400 hover:text-blue-600" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" asChild>
+                                                    <a href={doc.fileUrl} target="_blank" download>
+                                                        <Download className="h-4 w-4 text-slate-400 hover:text-blue-600" />
+                                                    </a>
+                                                </Button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -107,6 +124,13 @@ export default function DocumentsPage() {
                     </div>
                 </CardContent>
             </Card>
+
+            <DocumentPreviewModal
+                isOpen={previewOpen}
+                onOpenChange={setPreviewOpen}
+                docId={selectedDoc?.id || null}
+                title={selectedDoc?.title || ''}
+            />
         </div>
     );
 }

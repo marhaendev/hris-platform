@@ -17,8 +17,8 @@ export async function GET(request: Request) {
         let employee = empStmt.get(userId) as any;
 
         if (!employee) {
-            // Auto-create basic employee profile for Admins
-            if (session.role === 'ADMIN' || session.role === 'SUPERADMIN') {
+            // Auto-create basic employee profile for Admins/Owners
+            if (session.role === 'ADMIN' || session.role === 'SUPERADMIN' || session.role === 'COMPANY_OWNER') {
                 const insertEmp = db.prepare('INSERT INTO Employee (userId, baseSalary, position) VALUES (?, ?, ?)');
                 const result = insertEmp.run(userId, 0, session.role);
                 employee = { id: result.lastInsertRowid };
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
         }
 
         // --- Hybrid Auto Check-out Logic ---
-        const settings = db.prepare("SELECT key, value FROM SystemSetting WHERE key IN ('office_end_time', 'enable_auto_checkout')").all() as { key: string, value: string }[];
+        const settings = db.prepare("SELECT key, value FROM SystemSetting WHERE companyId = ? AND key IN ('office_end_time', 'enable_auto_checkout')").all(session.companyId) as { key: string, value: string }[];
         const settingsMap: Record<string, string> = {};
         settings.forEach(s => settingsMap[s.key] = s.value);
 
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
         }
         // -----------------------------------
 
-        const isAdmin = session.role === 'ADMIN' || session.role === 'SUPERADMIN';
+        const isAdmin = session.role === 'ADMIN' || session.role === 'SUPERADMIN' || session.role === 'COMPANY_OWNER';
         const employeeIdsParam = url.searchParams.get('employeeIds');
         const rolesParam = url.searchParams.get('roles');
         const searchParam = url.searchParams.get('search');
@@ -81,8 +81,10 @@ export async function GET(request: Request) {
                 WHERE 1=1
             `;
 
-            if (session.role === 'ADMIN') {
-                historyQuery += ` AND u.role != 'SUPERADMIN' `;
+            if (session.role !== 'SUPERADMIN') {
+                // Owner and Admin are restricted to their company and cannot see Superadmin
+                historyQuery += ` AND u.companyId = ? AND u.role != 'SUPERADMIN' `;
+                params.push(session.companyId);
             }
 
             if (searchParam) {
@@ -164,7 +166,7 @@ export async function POST(request: Request) {
         }
 
         // --- Radius Validation ---
-        const settings = db.prepare("SELECT key, value FROM SystemSetting WHERE key IN ('office_latitude', 'office_longitude', 'attendance_radius_meters', 'office_start_time', 'office_end_time', 'enable_auto_checkout')").all() as { key: string, value: string }[];
+        const settings = db.prepare("SELECT key, value FROM SystemSetting WHERE companyId = ? AND key IN ('office_latitude', 'office_longitude', 'attendance_radius_meters', 'office_start_time', 'office_end_time', 'enable_auto_checkout')").all(session.companyId) as { key: string, value: string }[];
         const settingsMap: Record<string, string> = {};
         settings.forEach(s => settingsMap[s.key] = s.value);
 
@@ -196,10 +198,10 @@ export async function POST(request: Request) {
         let employee = empStmt.get(userId) as any;
 
         if (!employee) {
-            // Auto-create basic employee profile for Admins
-            if (session.role === 'ADMIN' || session.role === 'SUPERADMIN') {
-                const insertEmp = db.prepare('INSERT INTO Employee (userId, baseSalary, position) VALUES (?, ?, ?)');
-                const result = insertEmp.run(userId, 0, session.role);
+            // Auto-create basic employee profile for Admins/Owners
+            if (session.role === 'ADMIN' || session.role === 'SUPERADMIN' || session.role === 'COMPANY_OWNER') {
+                const insertEmp = db.prepare('INSERT INTO Employee (userId, baseSalary, position, companyId) VALUES (?, ?, ?, ?)');
+                const result = insertEmp.run(userId, 0, session.role, session.companyId);
                 employee = { id: result.lastInsertRowid };
             } else {
                 return NextResponse.json({ error: 'Not an employee' }, { status: 403 });
@@ -243,8 +245,8 @@ export async function POST(request: Request) {
         }
 
         const insert = db.prepare(`
-            INSERT INTO Attendance (employeeId, date, checkIn, status, checkInStatus, latitude, longitude, address)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO Attendance (employeeId, date, checkIn, status, checkInStatus, latitude, longitude, address, companyId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
         // Dynamic Lateness Logic
@@ -260,7 +262,7 @@ export async function POST(request: Request) {
             checkInStatus = 'LATE';
         }
 
-        insert.run(employee.id, todayDate.toISOString(), now.toISOString(), 'PRESENT', checkInStatus, latitude, longitude, address || null);
+        insert.run(employee.id, todayDate.toISOString(), now.toISOString(), 'PRESENT', checkInStatus, latitude, longitude, address || null, session.companyId);
 
         // Log Activity
         try {

@@ -242,6 +242,51 @@ export async function GET(request: Request) {
         // 6. Attendance Chart (Dynamic Range)
         const chartData = generateChartData(0, false, companyId);
 
+        // 7. Leave Statistics (This Month)
+        const startOfMonth = new Date(todayJakartaDate.getFullYear(), todayJakartaDate.getMonth(), 1).toISOString();
+        const endOfMonth = new Date(todayJakartaDate.getFullYear(), todayJakartaDate.getMonth() + 1, 0).toISOString();
+
+        let leaveQueryBase = "SELECT count(*) as count FROM LeaveRequest lr JOIN Employee e ON lr.employeeId = e.id JOIN User u ON e.userId = u.id WHERE e.companyId = ?";
+        if (isAdmin) leaveQueryBase += " AND u.role != 'SUPERADMIN'";
+
+        const pendingLeaves = (db.prepare(leaveQueryBase + " AND lr.status = 'PENDING'").get(companyId) as any).count;
+        const approvedLeaves = (db.prepare(leaveQueryBase + " AND lr.status = 'APPROVED' AND lr.startDate >= ?").get(companyId, startOfMonth) as any).count; // Starts this month
+        const rejectedLeaves = (db.prepare(leaveQueryBase + " AND lr.status = 'REJECTED' AND lr.updatedAt >= ?").get(companyId, startOfMonth) as any).count; // Rejected this month
+
+        // 8. Employee Breakdown
+        // Active can be considered all for now, or maybe check if resign date? Schema doesn't have resign date yet.
+        // We'll use "New This Month"
+        let newEmpQuery = "SELECT count(*) as count FROM Employee e JOIN User u ON e.userId = u.id WHERE e.companyId = ? AND e.joinDate >= ?";
+        if (isAdmin) newEmpQuery += " AND u.role != 'SUPERADMIN'";
+        const newEmployees = (db.prepare(newEmpQuery).get(companyId, startOfMonth) as any).count;
+
+        // 9. Calendar Events (Current Month)
+        // Fetch approved leaves
+        let calendarQuery = `
+            SELECT lr.startDate, lr.endDate, u.name, e.departmentId 
+            FROM LeaveRequest lr
+            JOIN Employee e ON lr.employeeId = e.id
+            JOIN User u ON e.userId = u.id
+            WHERE e.companyId = ? AND lr.status = 'APPROVED'
+            AND (
+                (lr.startDate BETWEEN ? AND ?) OR 
+                (lr.endDate BETWEEN ? AND ?)
+            )
+        `;
+        if (isAdmin) calendarQuery += " AND u.role != 'SUPERADMIN'";
+
+        const rawEvents = db.prepare(calendarQuery).all(companyId, startOfMonth, endOfMonth, startOfMonth, endOfMonth);
+
+        // Transform range to individual dates for easier frontend consumption (optional, or handle in frontend. 
+        // Let's return raw ranges and let frontend handle expanding if needed, OR expand here for simple "has event" markers.)
+        // Actually, simple list of events with start/end is standard for calendars.
+        const calendarEvents = rawEvents.map((ev: any) => ({
+            title: `Cuti: ${ev.name}`,
+            start: ev.startDate,
+            end: ev.endDate,
+            type: 'leave'
+        }));
+
         return NextResponse.json({
             totalEmployees: employeeCount,
             departments: {
@@ -252,7 +297,7 @@ export async function GET(request: Request) {
                 total: totalPositions,
                 active: activePositions
             },
-            presentToday: onTimeCount + lateCount, // Total present for existing UI compatibility
+            presentToday: onTimeCount + lateCount,
             todayAttendance: {
                 onTime: onTimeCount,
                 late: lateCount,
@@ -261,7 +306,17 @@ export async function GET(request: Request) {
             },
             totalPayroll: totalPayroll,
             recentEmployees,
-            attendanceChart: chartData
+            attendanceChart: chartData,
+            leaveStats: {
+                pending: pendingLeaves,
+                approved: approvedLeaves,
+                rejected: rejectedLeaves
+            },
+            employeeStats: {
+                total: employeeCount,
+                newThisMonth: newEmployees
+            },
+            calendarEvents
         });
     } catch (error: any) {
         console.error("Dashboard stats error:", error);

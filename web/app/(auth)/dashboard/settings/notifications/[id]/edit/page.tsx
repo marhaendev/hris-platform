@@ -37,7 +37,7 @@ const DESTINATIONS = [
     { label: 'Pengaturan Sistem', value: '/dashboard/settings/website' },
 ];
 
-const AVAILABLE_ROLES = ['SUPERADMIN', 'ADMIN', 'EMPLOYEE'];
+const AVAILABLE_ROLES = ['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN', 'EMPLOYEE'];
 
 export default function EditNotificationPage() {
     const router = useRouter();
@@ -234,7 +234,7 @@ export default function EditNotificationPage() {
                                 <Select
                                     value={formData.category}
                                     onValueChange={(v: any) => setFormData({ ...formData, category: v })}
-                                    disabled={user?.role === 'ADMIN' && (formData.category === 'system' || formData.category === 'wa')}
+                                    disabled={(user?.role === 'ADMIN' || user?.role === 'COMPANY_OWNER') && (formData.category === 'system' || formData.category === 'wa')}
                                 >
                                     <SelectTrigger className="rounded-xl border-slate-200 h-12">
                                         <SelectValue />

@@ -82,6 +82,41 @@ export async function POST(request: Request) {
         const hashedPassword = await hashPassword('123456'); // Default password
         const now = new Date().toISOString();
 
+        // Get company owner email to extract domain
+        console.log(`[GENERATE] Starting generation for companyId: ${session.companyId}`);
+
+        let emailDomain = 'example.com'; // Fallback default
+        try {
+            // Try OWNER first, then ADMIN as fallback
+            console.log(`[GENERATE] Querying OWNER for companyId: ${session.companyId}`);
+            let owner = db.prepare('SELECT email FROM User WHERE companyId = ? AND role = \'OWNER\' LIMIT 1').get(session.companyId) as any;
+            console.log(`[GENERATE] OWNER query result:`, owner);
+
+            if (!owner || !owner.email) {
+                // Fallback: try ADMIN
+                console.log(`[GENERATE] No OWNER found, trying ADMIN for companyId: ${session.companyId}`);
+                owner = db.prepare('SELECT email FROM User WHERE companyId = ? AND role = \'ADMIN\' LIMIT 1').get(session.companyId) as any;
+                console.log(`[GENERATE] ADMIN query result:`, owner);
+            }
+
+            if (owner && owner.email) {
+                console.log(`[GENERATE] Found user with email: ${owner.email}`);
+                const domainMatch = owner.email.match(/@(.+)$/);
+                console.log(`[GENERATE] Domain regex match:`, domainMatch);
+                if (domainMatch) {
+                    emailDomain = domainMatch[1];
+                    console.log(`[GENERATE] ✅ Using email domain: ${emailDomain} from ${owner.email}`);
+                }
+            } else {
+                console.log('[GENERATE] ❌ No OWNER or ADMIN found, using example.com');
+            }
+        } catch (e) {
+            console.error('[GENERATE] ❌ Error fetching owner email:', e);
+            // Use fallback domain
+        }
+
+        console.log(`[GENERATE] Final domain to use: ${emailDomain}`);
+
         const transaction = db.transaction(() => {
             const results = [];
 
@@ -96,18 +131,19 @@ export async function POST(request: Request) {
                 VALUES(?, ?, ?, ?, ?, ?, ?, ?)
             `);
 
-            const timestamp = Date.now();
-
             for (let i = 0; i < count; i++) {
                 const firstName = getRandomItem(NAMES);
                 const lastName = getRandomItem(LAST_NAMES);
                 const fullName = `${firstName} ${lastName}`;
 
-                // Guarantee uniqueness without DB query using timestamp + index
-                // Format: budi.santoso.1700000000.1
-                const baseUsername = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/[^a-z0-9.]/g, '');
-                const username = `${baseUsername}.${timestamp}.${i}`;
-                const email = `${username}@example.com`;
+                // Short, unique email format: firstname.lastname[counter]@domain
+                const baseEmail = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/[^a-z0-9.]/g, '');
+
+                // Add small counter for uniqueness (starts from 1 for first generation)
+                const counter = i + 1;
+                const username = counter === 1 ? baseEmail : `${baseEmail}${counter}`;
+                const email = `${username}@${emailDomain}`;
+
 
                 // Random Dept & Position
                 let deptId = null;

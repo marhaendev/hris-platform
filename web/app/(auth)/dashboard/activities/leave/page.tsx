@@ -24,13 +24,14 @@ interface DateRange {
 
 export default function LeavePage() {
     const user = useUser();
-    const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPERADMIN';
+    const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPERADMIN' || user?.role === 'COMPANY_OWNER';
 
     const { t, locale } = useLanguage();
 
     const [leaves, setLeaves] = useState<any[]>([]);
     const [quota, setQuota] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [filterType, setFilterType] = useState('ALL');
 
@@ -168,8 +169,9 @@ export default function LeavePage() {
         attachment: '' // base64 string
     });
 
-    const fetchLeaves = async (targetPage = currentPage) => {
-        setIsLoading(true);
+    const fetchLeaves = async (targetPage = currentPage, isSilent = false) => {
+        if (!isSilent) setIsLoading(true);
+        else setIsRefreshing(true);
         try {
             const params = new URLSearchParams();
             if (filterType !== 'ALL') params.append('type', filterType);
@@ -197,7 +199,8 @@ export default function LeavePage() {
         } catch (error) {
             console.error(error);
         } finally {
-            setIsLoading(false);
+            if (!isSilent) setIsLoading(false);
+            setIsRefreshing(false);
         }
     };
 
@@ -245,6 +248,19 @@ export default function LeavePage() {
             }
         }
     };
+
+    // Auto-refresh logic (Realtime 1s)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (document.visibilityState === 'visible') {
+                // Poll every 1s if Admin/Owner (to see requests)
+                // Or if it's an employee (to see status changes)
+                fetchLeaves(currentPage, true);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [currentPage, filterType, selectedStatus, dateRange, selectedEmployeeIds, searchQuery, isSearchExpanded]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -404,9 +420,9 @@ export default function LeavePage() {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="space-y-8">
                 {/* Form Pengajuan (Only for Employee or Admin acting as Employee) */}
-                <div className="lg:col-span-1">
+                <div className="w-full">
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-slate-800">{t.leave_mgmt.form.title}</CardTitle>
@@ -414,23 +430,23 @@ export default function LeavePage() {
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>{t.leave_mgmt.form.type}</Label>
-                                    <Select
-                                        value={formData.type}
-                                        onValueChange={(val) => setFormData({ ...formData, type: val })}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {sortedTypeOptions.map(opt => (
-                                                <SelectItem key={opt.id} value={opt.id}>{opt.label}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>{t.leave_mgmt.form.type}</Label>
+                                        <Select
+                                            value={formData.type}
+                                            onValueChange={(val) => setFormData({ ...formData, type: val })}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {sortedTypeOptions.map(opt => (
+                                                    <SelectItem key={opt.id} value={opt.id}>{opt.label}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                     <div className="space-y-2">
                                         <Label>{t.leave_mgmt.form.startDate}</Label>
                                         <Input
@@ -481,10 +497,21 @@ export default function LeavePage() {
                 </div>
 
                 {/* List Riwayat */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="w-full space-y-4">
                     <Card>
                         <CardHeader className="py-3 border-b">
-                            <CardTitle className="text-slate-800 text-lg">{isAdmin ? t.leave_mgmt.list.titleAdmin : t.leave_mgmt.list.titleUser}</CardTitle>
+                            <div className="flex items-baseline gap-3">
+                                <CardTitle className="text-slate-800 text-lg">{isAdmin ? t.leave_mgmt.list.titleAdmin : t.leave_mgmt.list.titleUser}</CardTitle>
+                                {isAdmin && (
+                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-100/50">
+                                        <div className={cn(
+                                            "w-1.5 h-1.5 rounded-full bg-emerald-500",
+                                            isRefreshing ? "animate-ping" : "animate-pulse"
+                                        )} />
+                                        <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Live</span>
+                                    </div>
+                                )}
+                            </div>
                         </CardHeader>
                         <CardContent className="space-y-4 pt-4">
                             {/* Filter Tipe Cuti (Filter Chips) */}

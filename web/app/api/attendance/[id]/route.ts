@@ -8,22 +8,53 @@ export async function DELETE(
 ) {
     try {
         const session = await getSession();
-        // Only Admin or Superadmin can delete for debug
-        if (!session || (session.role !== 'ADMIN' && session.role !== 'SUPERADMIN')) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        if (!session) return NextResponse.json({ error: 'Sesi berakhir, silakan login kembali' }, { status: 401 });
+
+        const allowedRoles = ['ADMIN', 'SUPERADMIN', 'COMPANY_OWNER'];
+        if (!allowedRoles.includes(session.role)) {
+            return NextResponse.json({ error: 'Hanya Admin atau Owner yang dapat menghapus data' }, { status: 403 });
         }
 
         const id = params.id;
 
-        const stmt = db.prepare('DELETE FROM Attendance WHERE id = ?');
-        const result = stmt.run(id);
+        // Sync companyId to ensure consistency before delete check
+        try {
+            db.prepare(`
+                UPDATE Attendance 
+                SET companyId = (SELECT companyId FROM Employee WHERE id = Attendance.employeeId)
+                WHERE id = ? AND companyId IS NULL
+            `).run(id);
+        } catch (e) { }
+
+        let result;
+        if (session.role === 'SUPERADMIN') {
+            result = db.prepare('DELETE FROM Attendance WHERE id = ?').run(id);
+        } else {
+            // Check ownership via JOIN path (User -> Employee -> Attendance)
+            // This guarantees that an owner can only delete their own company's data
+            const stmt = db.prepare(`
+                DELETE FROM Attendance 
+                WHERE id = ? 
+                AND employeeId IN (
+                    SELECT e.id FROM Employee e
+                    JOIN User u ON e.userId = u.id
+                    WHERE u.companyId = ?
+                )
+            `);
+            result = stmt.run(id, Number(session.companyId));
+        }
 
         if (result.changes === 0) {
-            return NextResponse.json({ error: 'Attendance record not found' }, { status: 404 });
+            // Check if it exists at all to provide better feedback
+            const check = db.prepare('SELECT id FROM Attendance WHERE id = ?').get(id);
+            if (!check) {
+                return NextResponse.json({ error: 'Data tidak ditemukan (ID salah atau sudah dihapus)' }, { status: 404 });
+            }
+            return NextResponse.json({ error: 'Gagal: Anda tidak memiliki izin untuk menghapus data perusahaan lain' }, { status: 403 });
         }
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: `Server Error: ${error.message}` }, { status: 500 });
     }
 }

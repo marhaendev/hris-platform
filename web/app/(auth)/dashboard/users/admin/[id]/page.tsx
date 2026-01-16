@@ -113,38 +113,38 @@ export default function AdminDetailPage({ params }: { params: { id: string } }) 
     if (!admin) return <div className="p-8 text-center text-red-500">{t?.userDetail?.admin?.notFound || 'Admin tidak ditemukan.'}</div>;
 
     return (
-        <div className="p-6 max-w-5xl mx-auto space-y-6">
+        <div className="p-4 md:p-6 max-w-4xl md:max-w-5xl mx-auto space-y-4 md:space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href="/dashboard/users/admin"><ChevronLeft className="h-5 w-5" /></Link>
+                <div className="flex items-center gap-3 md:gap-4">
+                    <Button variant="ghost" size="icon" asChild className="h-8 w-8 md:h-10 md:w-10">
+                        <Link href="/dashboard/users/admin"><ChevronLeft className="h-4 w-4 md:h-5 md:w-5" /></Link>
                     </Button>
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-slate-800">{admin.name}</h1>
-                        <p className="text-slate-500">{t.userDetail.admin.title}</p>
+                        <h1 className="text-lg md:text-2xl font-bold tracking-tight text-slate-800">{admin.name}</h1>
+                        <p className="text-xs md:text-sm text-slate-500">{t.userDetail.admin.title}</p>
                     </div>
                 </div>
-                <Button asChild className="bg-primary hover:bg-primary/90">
+                <Button asChild className="bg-primary hover:bg-primary/90 h-8 text-xs md:h-10 md:text-sm">
                     <Link href={`/dashboard/users/admin/${params.id}/edit`}>
-                        <Edit className="mr-2 h-4 w-4" /> {t.userDetail.actions.editProfile}
+                        <Edit className="mr-2 h-3 w-3 md:h-4 md:w-4" /> {t.userDetail.actions.editProfile}
                     </Link>
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
                 {/* Sidebar Info */}
                 <Card className="md:col-span-1 shadow-sm h-fit">
                     <CardContent className="pt-6 flex flex-col items-center text-center">
-                        <Avatar className="h-24 w-24 mb-4 bg-primary/10 text-primary">
-                            <AvatarFallback className="text-2xl font-bold">
+                        <Avatar className="h-20 w-20 md:h-24 md:w-24 mb-4 bg-primary/10 text-primary">
+                            <AvatarFallback className="text-xl md:text-2xl font-bold">
                                 {admin.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                             </AvatarFallback>
                         </Avatar>
-                        <h2 className="text-lg font-bold text-slate-900">{admin.name}</h2>
-                        <div className="text-sm text-slate-500 mb-4">{admin.email}</div>
+                        <h2 className="text-base md:text-lg font-bold text-slate-900">{admin.name}</h2>
+                        <div className="text-xs md:text-sm text-slate-500 mb-4 break-all">{admin.email}</div>
 
-                        <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 mb-4">
+                        <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 mb-4 text-[10px] md:text-xs">
                             <ShieldCheck className="mr-1 h-3 w-3" />
                             {t.userDetail.admin.title}
                         </Badge>
@@ -155,40 +155,40 @@ export default function AdminDetailPage({ params }: { params: { id: string } }) 
                 <div className="md:col-span-3">
                     <Tabs defaultValue="profile">
                         <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="profile">{t.userDetail.tabs.profile}</TabsTrigger>
-                            <TabsTrigger value="activity">{t.userDetail.tabs.activity}</TabsTrigger>
+                            <TabsTrigger value="profile" className="text-xs md:text-sm">{t.userDetail.tabs.profile}</TabsTrigger>
+                            <TabsTrigger value="activity" className="text-xs md:text-sm">{t.userDetail.tabs.activity}</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="profile">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>{t.userDetail.profile.title}</CardTitle>
-                                    <CardDescription>{t.userDetail.profile.subtitle}</CardDescription>
+                                    <CardTitle className="text-base md:text-lg">{t.userDetail.profile.title}</CardTitle>
+                                    <CardDescription className="text-xs md:text-sm">{t.userDetail.profile.subtitle}</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="space-y-1">
-                                            <Label className="text-xs text-slate-500 uppercase">{t.userDetail.profile.fullName}</Label>
-                                            <div className="flex items-center gap-2 font-medium">
-                                                <User className="h-4 w-4 text-slate-400" /> {admin.name}
+                                            <Label className="text-[10px] text-slate-500 uppercase">{t.userDetail.profile.fullName}</Label>
+                                            <div className="flex items-center gap-2 font-medium text-sm md:text-base">
+                                                <User className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-400" /> {admin.name}
                                             </div>
                                         </div>
                                         <div className="space-y-1">
-                                            <Label className="text-xs text-slate-500 uppercase">{t.userDetail.profile.email}</Label>
-                                            <div className="flex items-center gap-2 font-medium">
-                                                <Mail className="h-4 w-4 text-slate-400" /> {admin.email}
+                                            <Label className="text-[10px] text-slate-500 uppercase">{t.userDetail.profile.email}</Label>
+                                            <div className="flex items-center gap-2 font-medium text-sm md:text-base break-all">
+                                                <Mail className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-400" /> {admin.email}
                                             </div>
                                         </div>
                                         <div className="space-y-1">
-                                            <Label className="text-xs text-slate-500 uppercase">{t.userDetail.profile.role}</Label>
-                                            <div className="flex items-center gap-2 font-medium">
-                                                <KeyRound className="h-4 w-4 text-slate-400" /> {t.userDetail.admin.title}
+                                            <Label className="text-[10px] text-slate-500 uppercase">{t.userDetail.profile.role}</Label>
+                                            <div className="flex items-center gap-2 font-medium text-sm md:text-base">
+                                                <KeyRound className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-400" /> {t.userDetail.admin.title}
                                             </div>
                                         </div>
                                         <div className="space-y-1">
-                                            <Label className="text-xs text-slate-500 uppercase">{t.userDetail.profile.registeredSince}</Label>
-                                            <div className="flex items-center gap-2 font-medium">
-                                                <Calendar className="h-4 w-4 text-slate-400" />
+                                            <Label className="text-[10px] text-slate-500 uppercase">{t.userDetail.profile.registeredSince}</Label>
+                                            <div className="flex items-center gap-2 font-medium text-sm md:text-base">
+                                                <Calendar className="h-3.5 w-3.5 md:h-4 md:w-4 text-slate-400" />
                                                 {admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
                                             </div>
                                         </div>
@@ -201,17 +201,17 @@ export default function AdminDetailPage({ params }: { params: { id: string } }) 
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                     <div className="flex flex-col space-y-1.5">
-                                        <CardTitle>{t.userDetail.activity.title}</CardTitle>
-                                        <CardDescription>{t.userDetail.activity.subtitle}</CardDescription>
+                                        <CardTitle className="text-base md:text-lg">{t.userDetail.activity.title}</CardTitle>
+                                        <CardDescription className="text-xs md:text-sm">{t.userDetail.activity.subtitle}</CardDescription>
                                     </div>
                                     {currentUser?.role === 'SUPERADMIN' && logs.length > 0 && (
                                         <Button
                                             variant="destructive"
                                             size="sm"
-                                            className="h-8"
+                                            className="h-7 text-xs md:h-8 md:text-sm"
                                             onClick={triggerDeleteAllLogs}
                                         >
-                                            <Trash2 className="mr-2 h-4 w-4" /> {t.userDetail.activity.deleteAll}
+                                            <Trash2 className="mr-2 h-3.5 w-3.5 md:h-4 md:w-4" /> {t.userDetail.activity.deleteAll}
                                         </Button>
                                     )}
                                 </CardHeader>
@@ -224,8 +224,8 @@ export default function AdminDetailPage({ params }: { params: { id: string } }) 
                                                         <div className="flex items-start gap-4">
                                                             <div className="mt-1 h-2 w-2 rounded-full bg-blue-500 shrink-0" />
                                                             <div className="space-y-1">
-                                                                <p className="text-sm font-medium text-slate-900">{log.description || log.action}</p>
-                                                                <p className="text-xs text-slate-500">
+                                                                <p className="text-xs md:text-sm font-medium text-slate-900">{log.description || log.action}</p>
+                                                                <p className="text-[10px] md:text-xs text-slate-500">
                                                                     {new Date(log.createdAt).toLocaleString('id-ID', {
                                                                         day: 'numeric', month: 'short', year: 'numeric',
                                                                         hour: '2-digit', minute: '2-digit'
@@ -251,17 +251,19 @@ export default function AdminDetailPage({ params }: { params: { id: string } }) 
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
+                                                        className="h-7 text-xs md:h-9 md:text-sm"
                                                         onClick={() => setPage(p => Math.max(1, p - 1))}
                                                         disabled={page === 1}
                                                     >
                                                         {t.userDetail.activity.previous}
                                                     </Button>
-                                                    <span className="text-xs text-slate-500">
+                                                    <span className="text-[10px] md:text-xs text-slate-500">
                                                         {t.userDetail.activity.page} {page} {t.userDetail.activity.of} {pagination.totalPages || 1}
                                                     </span>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
+                                                        className="h-7 text-xs md:h-9 md:text-sm"
                                                         onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
                                                         disabled={page >= (pagination.totalPages || 1)}
                                                     >
@@ -271,7 +273,7 @@ export default function AdminDetailPage({ params }: { params: { id: string } }) 
                                             </>
                                         ) : (
                                             <div className="text-center py-12 text-slate-500">
-                                                <p>{t.userDetail.activity.empty}</p>
+                                                <p className="text-sm">{t.userDetail.activity.empty}</p>
                                             </div>
                                         )}
                                     </div>

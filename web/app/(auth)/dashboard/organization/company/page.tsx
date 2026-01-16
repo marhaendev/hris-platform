@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useUser } from "@/app/(auth)/DashboardClientLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,10 +21,23 @@ import { Layers } from "lucide-react";
 
 export default function CompaniesPage() {
     const { t } = useLanguage();
-    const { refreshCompany } = useUser();
+    const router = useRouter();
+    const { user, refreshCompany } = useUser();
     const [companies, setCompanies] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        if (user && !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+            router.push('/dashboard');
+            toast.error("Akses Ditolak: Anda tidak memiliki izin");
+        }
+    }, [user, router]);
+
+    if (!user || !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+        return null;
+    }
+
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);

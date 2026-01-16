@@ -39,9 +39,16 @@ const nunito = Nunito({
 // Playpen removed as per request
 
 // Update metadata while we are here to reflect HRIZ branding
+import db from "@/lib/db";
+
 export const metadata: Metadata = {
-  title: "HRIS - Platform HRIS & Payroll Otomatis",
+  title: "HRIS",
   description: "Kelola karyawan, payroll, dan absensi lebih mudah dengan HRIS.",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

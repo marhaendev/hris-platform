@@ -31,7 +31,8 @@ import {
     FlaskConical,
     ShieldAlert,
     Search,
-    Loader2
+    Loader2,
+    ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -95,7 +96,7 @@ const menuItems: MenuItem[] = [
         subItems: [
             { id: 'org-company', name: "Perusahaan", href: "/dashboard/organization/company" },
             { id: 'org-dept', name: "Departemen", href: "/dashboard/organization/departments" },
-            { id: 'org-pos', name: "Posisi", href: "/dashboard/organization/positions" },
+            { id: 'org-chart', name: "Bagan Organisasi", href: "/dashboard/organization/chart" },
         ]
     },
     {
@@ -135,8 +136,8 @@ const menuItems: MenuItem[] = [
                 id: 'finance-payroll',
                 name: "Penggajian",
                 subItems: [
-                    { id: 'finance-salary', name: "Gaji Karyawan", href: "/dashboard/payroll/setting" },
-                    { id: 'finance-dashboard', name: "Dashboard Gaji", href: "/dashboard/payroll" },
+                    { id: 'finance-salary', name: "Gaji Pokok", href: "/dashboard/payroll/salaries" },
+                    { id: 'finance-dashboard', name: "Proses Gaji", href: "/dashboard/payroll" },
                 ]
             },
         ],
@@ -147,9 +148,11 @@ const menuItems: MenuItem[] = [
         icon: Settings,
         subItems: [
             { id: 'sys-wa', name: "WhatsApp Bot", href: "/dashboard/settings/whatsapp" },
+            { id: 'sys-logo', name: "Logo", href: "/dashboard/settings/logo" },
             { id: 'sys-notif', name: "Notifikasi", href: "/dashboard/settings/notifications" },
             { id: 'sys-act', name: "Aktivitas", href: "/dashboard/settings/activities" },
             { id: 'sys-auth', name: "Autentikasi", href: "/dashboard/settings/authentication" },
+            { id: 'sys-maintenance', name: "System", href: "/dashboard/settings/system" }, // Added System item
         ],
     },
     {
@@ -163,6 +166,12 @@ const menuItems: MenuItem[] = [
         name: "About",
         icon: HelpCircle,
         href: "/dashboard/about",
+    },
+    {
+        id: 'website',
+        name: "Landing Page",
+        icon: ArrowLeft,
+        href: "/",
     },
 ];
 
@@ -214,6 +223,15 @@ export function Sidebar({
     const [isStartingSim, setIsStartingSim] = useState(false);
 
     const [isSearchingCompanies, setIsSearchingCompanies] = useState(false);
+    const [companyLogo, setCompanyLogo] = useState<string>('/icon.png');
+
+    useEffect(() => {
+        const fetchLogo = async () => {
+            // Force refresh by adding timestamp
+            setCompanyLogo(`/icon.png?v=${Date.now()}`);
+        };
+        fetchLogo();
+    }, []);
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -303,7 +321,6 @@ export function Sidebar({
 
             fetchPerms();
         }, 300); // 300ms delay to show skeleton
-
         return () => clearTimeout(timer);
     }, [role]);
 
@@ -319,12 +336,21 @@ export function Sidebar({
             "Keuangan": t.nav.finance,
             "Pengaturan": t.nav.system,
             "WhatsApp Bot": t.nav.whatsapp,
-            "Website": t.nav.settings,
+            "Landing Page": "Landing Page",
 
             "Dashboard": t.nav.dashboard,
+            "Organisasi": t.nav.organization,
+            "Users": t.nav.users,
+            "Data Master": t.nav.master_data,
+            "Bank": t.nav.master_bank,
+            "Metode Bayar": t.nav.master_payment,
+            "Aktivitas": t.nav.activities_settings || "Activities",
+            "Keuangan": t.nav.finance,
+            "Pengaturan": t.nav.system,
             "About": t.nav.about,
             "Analytics": t.nav.analytics,
             "Admin": t.nav.admin,
+            "Owner": t.nav.owner,
             "Karyawan": t.nav.employees,
             "Dokumen": t.nav.documents,
             "Rekrutmen": t.nav.recruitment,
@@ -336,16 +362,20 @@ export function Sidebar({
             "Payroll": t.nav.payroll,
             "Penggajian": t.nav.payroll,
             "Penggajian Otomatis": t.nav.payroll_generator,
-            "Gaji Karyawan": t.nav.salary_employee || "Gaji Karyawan",
+            "Gaji Pokok": t.nav.salary_employee || "Gaji Pokok",
+            "Proses Gaji": t.nav.payroll_dashboard || "Proses Gaji",
             "Riwayat": t.nav.history,
             "Settings": t.nav.settings,
             "Integrasi WhatsApp": t.nav.whatsapp,
+            "WhatsApp Bot": t.nav.whatsapp,
             "Notifikasi": t.nav.notifications,
             "Perusahaan": t.nav.companies,
             "Departemen": t.nav.master_departemen,
+            "Bagan Organisasi": t.nav.org_chart || "Bagan Organisasi",
             "Posisi": t.nav.master_posisi,
             "Setting Global": t.nav.master_data,
             "Playground": t.nav.playground || "Playground",
+            "System": "System",
         };
         return map[key] || key;
     };
@@ -361,6 +391,7 @@ export function Sidebar({
         // Logic filter based on Role (simplified from original)
         // Adjust strictness as needed for your specific app logic
         if (item.id === 'master-data') return role === 'SUPERADMIN';
+        if (item.id === 'users') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
         if (item.id === 'organization') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
         if (item.id === 'finance') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
         if (item.id === 'system') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
@@ -371,6 +402,12 @@ export function Sidebar({
         if (item.href === '/dashboard/users/employees') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
         if (item.href === '/dashboard/admin/companies') return role === 'SUPERADMIN';
         if (item.id === 'playground') return role === 'SUPERADMIN';
+        if (item.id === 'about') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
+
+        // System Settings - Superadmin only
+        if (item.id === 'sys-maintenance') return role === 'SUPERADMIN';
+
+        if (item.id === 'sys-logo') return role === 'SUPERADMIN';
 
         return true;
     };
@@ -561,9 +598,11 @@ export function Sidebar({
         return item;
     }).filter(item => {
         if (item.id === 'master-data') return role === 'SUPERADMIN';
+        if (item.id === 'users') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
         if (item.id === 'organization') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
         if (item.id === 'finance') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
         if (item.id === 'system') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
+        if (item.id === 'about') return role === 'SUPERADMIN' || role === 'ADMIN' || role === 'COMPANY_OWNER';
         if (item.id === 'playground') return role === 'SUPERADMIN';
 
         if (item.subItems && item.subItems.length === 0) return false;
@@ -597,7 +636,7 @@ export function Sidebar({
                         <>
                             <div className="relative h-10 w-32">
                                 <Image
-                                    src="/logo.png"
+                                    src={companyLogo}
                                     alt="HRIS Logo"
                                     fill
                                     className="object-contain object-left"
@@ -617,7 +656,7 @@ export function Sidebar({
                         <div className="flex items-center justify-center relative w-full">
                             <div className="relative h-8 w-8">
                                 <Image
-                                    src="/logo.png"
+                                    src={companyLogo}
                                     alt="HRIS"
                                     fill
                                     className="object-contain object-center"
@@ -657,7 +696,7 @@ export function Sidebar({
                         </div>
                     ) : (
                         <>
-                            {menuItems.map(item => renderMenuItem(item))}
+                            {filteredItems.map(item => renderMenuItem(item))}
                         </>
                     )}
                 </div>

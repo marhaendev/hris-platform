@@ -100,8 +100,9 @@ export default function WhatsAppPage() {
         // Sync default message when language changes
         setTestMessage(t.whatsapp_mgmt.test.default_msg);
 
-        if (user && !['ADMIN', 'SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+        if (user && !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
             router.push('/dashboard');
+            toast.error("Akses Ditolak: Anda tidak memiliki izin");
             return;
         }
 
@@ -136,8 +137,14 @@ export default function WhatsAppPage() {
             }
         };
 
-        fetchData();
+        if (user && ['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+            fetchData();
+        }
     }, [user, router]);
+
+    if (!user || !['SUPERADMIN', 'COMPANY_OWNER'].includes(user.role)) {
+        return null;
+    }
 
     // 2. Polling Sessions & Logs
     useEffect(() => {
@@ -337,14 +344,14 @@ export default function WhatsAppPage() {
     );
 
     return (
-        <div className="flex-1 space-y-8 p-8 pt-6">
-            <div className="flex items-center justify-between">
+        <div className="flex-1 space-y-8 p-4 md:p-8 pt-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-900">{t.whatsapp_mgmt.title}</h2>
-                    <p className="text-slate-500">{t.whatsapp_mgmt.subtitle}</p>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">{t.whatsapp_mgmt.title}</h2>
+                    <p className="text-sm md:text-base text-slate-500">{t.whatsapp_mgmt.subtitle}</p>
                 </div>
                 {user?.role === 'SUPERADMIN' && (
-                    <Button variant="outline" size="sm" onClick={() => router.push('/dashboard/settings/whatsapp/manage')} className="gap-2 border-primary text-primary hover:bg-primary/5">
+                    <Button variant="outline" size="sm" onClick={() => router.push('/dashboard/settings/whatsapp/manage')} className="w-full md:w-auto gap-2 border-primary text-primary hover:bg-primary/5">
                         <SmartphoneNfc className="h-4 w-4" /> {t.whatsapp_mgmt.manage_bot}
                     </Button>
                 )}
@@ -413,26 +420,26 @@ export default function WhatsAppPage() {
                                                     <p className="text-center text-xs text-slate-400 italic py-4">{t.whatsapp_mgmt.shared.empty}</p>
                                                 )}
                                                 {sharedBots.map((bot) => (
-                                                    <div key={bot.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                                                    <div key={bot.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-colors gap-3">
                                                         <div className="flex items-center gap-3">
                                                             <div className={cn(
-                                                                "h-10 w-10 rounded-full flex items-center justify-center",
+                                                                "h-10 w-10 rounded-full flex items-center justify-center shrink-0",
                                                                 bot.status === 'connected' ? "bg-emerald-100 text-emerald-600" : "bg-slate-200 text-slate-400"
                                                             )}>
                                                                 <Smartphone className="h-5 w-5" />
                                                             </div>
-                                                            <div>
-                                                                <div className="text-sm font-bold text-slate-900">{bot.name}</div>
-                                                                <div className="text-[10px] text-slate-500 flex items-center gap-1">
+                                                            <div className="min-w-0">
+                                                                <div className="text-sm font-bold text-slate-900 truncate">{bot.name}</div>
+                                                                <div className="text-[10px] text-slate-500 flex items-center gap-1 flex-wrap">
                                                                     <Badge variant="outline" className="h-4 text-[9px] px-1 py-0">{bot.status.toUpperCase()}</Badge>
-                                                                    <span>+{bot.phone}</span>
+                                                                    <span className="truncate">+{bot.phone}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            className="h-8 text-xs font-bold gap-2"
+                                                            className="h-8 text-xs font-bold gap-2 w-full sm:w-auto"
                                                             disabled={bot.status !== 'connected' || isLinking}
                                                             onClick={() => handleUseSharedBot(bot.id)}
                                                         >
@@ -447,9 +454,9 @@ export default function WhatsAppPage() {
                             ) : isAddingSession ? (
                                 <div className="flex flex-col items-center">
                                     <h3 className="font-bold text-slate-900 mb-4 animate-pulse">{t.whatsapp_mgmt.scan_qr}</h3>
-                                    <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 mb-4 bg-white relative">
+                                    <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 mb-4 bg-white relative max-w-full">
                                         {newSessionQr ? (
-                                            <img src={newSessionQr} className="w-48 h-48 rounded" alt="QR" />
+                                            <img src={newSessionQr} className="w-48 h-48 rounded max-w-full object-contain" alt="QR" />
                                         ) : (
                                             <div className="w-48 h-48 flex items-center justify-center text-slate-400">
                                                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -475,9 +482,9 @@ export default function WhatsAppPage() {
                                             <h3 className="font-bold text-lg text-slate-900">
                                                 {isUsingSharedBot ? `Bot Sistem: ${isUsingSharedBot.name}` : `+${linkedSessionId}`}
                                             </h3>
-                                            <div className="flex items-center gap-2 mt-1">
+                                            <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 mt-1">
                                                 <Badge variant={status === 'connected' ? 'default' : 'destructive'}
-                                                    className={status === 'connected' ? 'bg-emerald-500' : ''}>
+                                                    className={cn("w-fit", status === 'connected' ? 'bg-emerald-500' : '')}>
                                                     {status === 'connected' ? t.whatsapp_mgmt.status.connected : t.whatsapp_mgmt.status.disconnected}
                                                 </Badge>
                                                 {status === 'connected' && <span className="text-xs text-slate-400">
@@ -589,14 +596,14 @@ export default function WhatsAppPage() {
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex flex-col sm:flex-row gap-2">
                                             <Popover open={openCountry} onOpenChange={setOpenCountry}>
                                                 <PopoverTrigger asChild>
                                                     <Button
                                                         variant="outline"
                                                         role="combobox"
                                                         aria-expanded={openCountry}
-                                                        className="w-[90px] justify-between px-3"
+                                                        className="w-full sm:w-[90px] justify-between px-3"
                                                     >
                                                         {countryCode
                                                             ? `+${countryCode}`

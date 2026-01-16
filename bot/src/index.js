@@ -5,6 +5,8 @@ const cors = require('cors');
 const QRCode = require('qrcode');
 const fs = require('fs');
 const path = require('path');
+const cron = require('node-cron');
+const Database = require('better-sqlite3');
 require('dotenv').config();
 
 const app = express();
@@ -483,7 +485,78 @@ app.post('/send-message', async (req, res) => {
     }
 });
 
+// Refresh scheduler settings API
+app.post('/scheduler/refresh', (req, res) => {
+    console.log('[Scheduler] Refresh request received');
+    startDatabaseScheduler();
+    res.json({ success: true, message: 'Scheduler settings reloaded' });
+});
+
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`WhatsApp Multi-Session Bot running on port ${PORT}`);
     initAllSessions();
+    startDatabaseScheduler();
 });
+
+// Database Path (Relative to src/index.js: ../../web/data/sqlite/hris.db)
+const DB_PATH = path.join(__dirname, '../../web/data/sqlite/hris.db');
+
+// Global variable to store current cron task
+let currentVacuumTask = null;
+
+function startDatabaseScheduler() {
+    // 1. Fetch settings from DB
+    let schedule = '0 3 * * *'; // Default: 3 AM
+    let enabled = false;
+
+    try {
+        if (fs.existsSync(DB_PATH)) {
+            const db = new Database(DB_PATH, { readonly: true, timeout: 5000 });
+            // Get enabled status
+            const enabledRow = db.prepare("SELECT value FROM SystemSetting WHERE key = 'auto_vacuum_enabled'").get();
+            if (enabledRow && enabledRow.value === 'true') {
+                enabled = true;
+            }
+
+            // Get schedule
+            const scheduleRow = db.prepare("SELECT value FROM SystemSetting WHERE key = 'auto_vacuum_schedule'").get();
+            if (scheduleRow && scheduleRow.value) {
+                if (cron.validate(scheduleRow.value)) {
+                    schedule = scheduleRow.value;
+                } else {
+                    console.warn(`[Scheduler] Invalid cron expression '${scheduleRow.value}', using default ${schedule}`);
+                }
+            }
+            db.close();
+        }
+    } catch (e) {
+        console.error('[Scheduler] Failed to read settings:', e.message);
+    }
+
+    // 2. Stop existing task
+    if (currentVacuumTask) {
+        currentVacuumTask.stop();
+        currentVacuumTask = null;
+    }
+
+    // 3. Start new task if enabled
+    if (enabled) {
+        console.log(`[Scheduler] Scheduling Database VACUUM at '${schedule}'`);
+        currentVacuumTask = cron.schedule(schedule, () => {
+            console.log('[Scheduler] Executing scheduled VACUUM...');
+            try {
+                if (fs.existsSync(DB_PATH)) {
+                    const db = new Database(DB_PATH, { timeout: 5000 });
+                    const start = Date.now();
+                    db.exec('VACUUM');
+                    db.close();
+                    console.log(`[Scheduler] VACUUM completed in ${Date.now() - start}ms`);
+                }
+            } catch (err) {
+                console.error('[Scheduler] VACUUM execution failed:', err);
+            }
+        });
+    } else {
+        console.log('[Scheduler] Database VACUUM is DISABLED in settings');
+    }
+}

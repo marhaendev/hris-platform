@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/app/(auth)/DashboardClientLayout';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, Plus, Eye, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -19,39 +21,60 @@ interface Department {
 }
 
 export default function OrganizationPage() {
+    const user = useUser();
+    const router = useRouter();
     const [departments, setDepartments] = useState<Department[]>([]);
-    const [filteredDepartments, setFilteredDepartments] = useState<Department[]>([]);
+    // Removed duplicate filteredDepartments state as basic filtering is now server-side or data is replaced
     const [searchQuery, setSearchQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
     const itemsPerPage = 20;
 
     const { t } = useLanguage();
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (user && !['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(user.role)) {
+            router.push('/dashboard');
+            toast.error("Akses Ditolak: Anda tidak memiliki izin");
+        }
+    }, [user, router]);
+
+    if (!user || !['SUPERADMIN', 'COMPANY_OWNER', 'ADMIN'].includes(user.role)) {
+        return null;
+    }
 
     useEffect(() => {
-        const lowerQuery = searchQuery.toLowerCase();
-        const filtered = departments.filter(dept =>
-            dept.name.toLowerCase().includes(lowerQuery) ||
-            dept.code.toLowerCase().includes(lowerQuery)
-        );
-        setFilteredDepartments(filtered);
-        setCurrentPage(1); // Reset to first page when search changes
-    }, [searchQuery, departments]);
+        const timer = setTimeout(() => {
+            fetchData();
+        }, 300); // Debounce search
+        return () => clearTimeout(timer);
+    }, [currentPage, searchQuery]);
 
     const fetchData = async () => {
+        setIsLoading(true);
         try {
-            const res = await fetch('/api/departments');
+            const params = new URLSearchParams({
+                page: currentPage.toString(),
+                limit: itemsPerPage.toString(),
+                q: searchQuery
+            });
+            const res = await fetch(`/api/departments?${params.toString()}`);
             const data = await res.json();
-            setDepartments(data);
-            setFilteredDepartments(data);
+
+            if (data.data) {
+                setDepartments(data.data);
+                setTotalPages(data.metadata.totalPages);
+                setTotalItems(data.metadata.total);
+            } else {
+                setDepartments([]); // Fallback
+            }
         } catch (error) {
             console.error("Failed to fetch departments", error);
+            toast.error("Gagal memuat data departemen");
         } finally {
             setIsLoading(false);
         }
@@ -65,11 +88,23 @@ export default function OrganizationPage() {
 
     const confirmDelete = async () => {
         if (!deleteTargetId) return;
-        await fetch(`/api/departments?id=${deleteTargetId}`, { method: 'DELETE' });
-        toast.success(t?.organization?.toast?.deleteSuccess || 'Departemen berhasil dihapus!');
-        fetchData();
+        try {
+            const res = await fetch(`/api/departments?id=${deleteTargetId}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.success(t?.organization?.toast?.deleteSuccess || 'Departemen berhasil dihapus!');
+                fetchData();
+            } else {
+                toast.error('Gagal menghapus departemen');
+            }
+        } catch (error) {
+            toast.error('Terjadi kesalahan');
+        }
         setDeleteTargetId(null);
     };
+
+    // Calculate start/end index for display purposes based on reliable server metadata
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
 
     return (
         <TooltipProvider>
@@ -86,7 +121,10 @@ export default function OrganizationPage() {
                                 placeholder={t?.organization?.search || 'Cari departemen...'}
                                 className="pl-8 w-full"
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e) => {
+                                    setSearchQuery(e.target.value);
+                                    setCurrentPage(1); // Reset page on search
+                                }}
                             />
                         </div>
                         <Link href="/dashboard/organization/departments/new" className="w-full sm:w-auto">
@@ -119,179 +157,95 @@ export default function OrganizationPage() {
                     </div>
                 ) : (
                     <>
-                        {/* Calculate pagination */}
-                        {(() => {
-                            // Separate active and all departments
-                            const activeDepartments = filteredDepartments.filter(dept => dept.employeeCount && dept.employeeCount > 0);
-                            const allDepartments = filteredDepartments;
+                        {/* Departments List */}
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {departments.map((dept) => (
+                                <Card key={dept.id} className={dept.employeeCount && dept.employeeCount > 0 ? "hover:shadow-md transition-shadow border-green-200" : "hover:shadow-md transition-shadow"}>
+                                    <CardContent className="p-4 flex items-center justify-between">
+                                        <div className="flex items-center gap-3 overflow-hidden">
+                                            <div className={`p-2 rounded-lg flex-shrink-0 ${dept.employeeCount && dept.employeeCount > 0 ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'}`}>
+                                                <Building2 className="h-5 w-5" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h3 className="font-semibold text-sm truncate" title={dept.name}>{dept.name}</h3>
 
-                            const totalPages = Math.ceil(allDepartments.length / itemsPerPage);
-                            const startIndex = (currentPage - 1) * itemsPerPage;
-                            const endIndex = startIndex + itemsPerPage;
-                            const paginatedDepartments = allDepartments.slice(startIndex, endIndex);
-
-                            return (
-                                <>
-                                    {/* Active Departments Section - Always visible */}
-                                    {activeDepartments.length > 0 && (
-                                        <>
-                                            <div className="mb-6">
-                                                <h3 className="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2">
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        Aktif
+                                                {dept.employeeCount !== undefined && dept.employeeCount > 0 && (
+                                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 mt-1">
+                                                        {dept.employeeCount} {dept.employeeCount === 1 ? 'karyawan' : 'karyawan'}
                                                     </span>
-                                                    Departemen dengan Karyawan
-                                                </h3>
-                                                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                                    {activeDepartments.map((dept) => (
-                                                        <Card key={dept.id} className="hover:shadow-md transition-shadow border-green-200">
-                                                            <CardContent className="p-4 flex items-center justify-between">
-                                                                <div className="flex items-center gap-3 overflow-hidden">
-                                                                    <div className="p-2 bg-green-100 text-green-600 rounded-lg flex-shrink-0">
-                                                                        <Building2 className="h-5 w-5" />
-                                                                    </div>
-                                                                    <div className="min-w-0">
-                                                                        <h3 className="font-semibold text-sm truncate" title={dept.name}>{dept.name}</h3>
-                                                                        <p className="text-xs text-slate-500 font-mono">CODE: {dept.code}</p>
-                                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 mt-1">
-                                                                            {dept.employeeCount} karyawan
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="flex items-center gap-1 flex-shrink-0">
-                                                                    <Tooltip>
-                                                                        <TooltipTrigger asChild>
-                                                                            <Link href={`/dashboard/organization/departments/${dept.id}/edit`}>
-                                                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-500 hover:text-blue-600">
-                                                                                    <Eye className="h-4 w-4" />
-                                                                                </Button>
-                                                                            </Link>
-                                                                        </TooltipTrigger>
-                                                                        <TooltipContent>{t?.organization?.tooltip?.edit || 'Edit / Detail'}</TooltipContent>
-                                                                    </Tooltip>
-
-                                                                    <Tooltip>
-                                                                        <TooltipTrigger asChild>
-                                                                            <Button
-                                                                                variant="ghost"
-                                                                                size="icon"
-                                                                                className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
-                                                                                onClick={(e) => handleDelete(dept.id, e)}
-                                                                            >
-                                                                                <Trash2 className="h-4 w-4" />
-                                                                            </Button>
-                                                                        </TooltipTrigger>
-                                                                        <TooltipContent>{t?.organization?.tooltip?.delete || 'Hapus Departemen'}</TooltipContent>
-                                                                    </Tooltip>
-                                                                </div>
-                                                            </CardContent>
-                                                        </Card>
-                                                    ))}
-                                                </div>
-                                            </div>
-
-                                            {/* Divider */}
-                                            <div className="relative my-8">
-                                                <div className="absolute inset-0 flex items-center">
-                                                    <div className="w-full border-t border-slate-300"></div>
-                                                </div>
-                                                <div className="relative flex justify-center text-sm">
-                                                    <span className="px-4 bg-slate-50 text-slate-500 font-medium">Semua Departemen</span>
-                                                </div>
-                                            </div>
-                                        </>
-                                    )}
-
-                                    {/* All Departments - Paginated */}
-                                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                        {paginatedDepartments.map((dept) => (
-                                            <Card key={dept.id} className="hover:shadow-md transition-shadow">
-                                                <CardContent className="p-4 flex items-center justify-between">
-                                                    <div className="flex items-center gap-3 overflow-hidden">
-                                                        <div className="p-2 bg-blue-100 text-blue-600 rounded-lg flex-shrink-0">
-                                                            <Building2 className="h-5 w-5" />
-                                                        </div>
-                                                        <div className="min-w-0">
-                                                            <h3 className="font-semibold text-sm truncate" title={dept.name}>{dept.name}</h3>
-                                                            <p className="text-xs text-slate-500 font-mono">CODE: {dept.code}</p>
-                                                            {dept.employeeCount !== undefined && dept.employeeCount > 0 && (
-                                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 mt-1">
-                                                                    {dept.employeeCount} {dept.employeeCount === 1 ? 'karyawan' : 'karyawan'}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-1 flex-shrink-0">
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Link href={`/dashboard/organization/departments/${dept.id}/edit`}>
-                                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-500 hover:text-blue-600">
-                                                                        <Eye className="h-4 w-4" />
-                                                                    </Button>
-                                                                </Link>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>{t?.organization?.tooltip?.edit || 'Edit / Detail'}</TooltipContent>
-                                                        </Tooltip>
-
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
-                                                                    onClick={(e) => handleDelete(dept.id, e)}
-                                                                >
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>{t?.organization?.tooltip?.delete || 'Hapus Departemen'}</TooltipContent>
-                                                        </Tooltip>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-
-                                        {!isLoading && filteredDepartments.length === 0 && (
-                                            <div className="text-center py-12 text-slate-500 col-span-full">
-                                                {searchQuery ? (t?.organization?.empty?.noMatch || 'Tidak ada departemen yang cocok.') : (t?.organization?.empty?.noData || 'Belum ada departemen created.')}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Pagination Controls */}
-                                    {totalPages > 1 && (
-                                        <div className="flex items-center justify-between mt-6 px-2">
-                                            <div className="text-sm text-slate-600">
-                                                {t?.organization?.pagination?.showing || 'Menampilkan'} {startIndex + 1}-{Math.min(endIndex, allDepartments.length)} {t?.organization?.pagination?.of || 'dari'} {allDepartments.length} {t?.organization?.pagination?.departments || 'departemen'}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                                    disabled={currentPage === 1}
-                                                >
-                                                    <ChevronLeft className="h-4 w-4 mr-1" />
-                                                    {t?.organization?.pagination?.previous || 'Sebelumnya'}
-                                                </Button>
-                                                <div className="text-sm text-slate-600 px-3">
-                                                    {t?.organization?.pagination?.page || 'Halaman'} {currentPage} {t?.organization?.pagination?.of || 'dari'} {totalPages}
-                                                </div>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                                                    disabled={currentPage === totalPages}
-                                                >
-                                                    {t?.organization?.pagination?.next || 'Selanjutnya'}
-                                                    <ChevronRight className="h-4 w-4 ml-1" />
-                                                </Button>
+                                                )}
                                             </div>
                                         </div>
-                                    )}
-                                </>
-                            );
-                        })()}
+                                        <div className="flex items-center gap-1 flex-shrink-0">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Link href={`/dashboard/organization/departments/${dept.id}`}>
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-500 hover:text-blue-600">
+                                                            <Eye className="h-4 w-4" />
+                                                        </Button>
+                                                    </Link>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{t?.organization?.tooltip?.edit || 'Detail & Posisi'}</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
+                                                        onClick={(e) => handleDelete(dept.id, e)}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{t?.organization?.tooltip?.delete || 'Hapus Departemen'}</TooltipContent>
+                                            </Tooltip>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+
+                            {!isLoading && departments.length === 0 && (
+                                <div className="text-center py-12 text-slate-500 col-span-full">
+                                    {searchQuery ? (t?.organization?.empty?.noMatch || 'Tidak ada departemen yang cocok.') : (t?.organization?.empty?.noData || 'Belum ada departemen.')}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div className="flex flex-col sm:flex-row items-center justify-between mt-6 px-2 gap-4 sm:gap-0">
+                                <div className="text-sm text-slate-600 text-center sm:text-left">
+                                    {t?.organization?.pagination?.showing || 'Menampilkan'} {startIndex + 1}-{endIndex} {t?.organization?.pagination?.of || 'dari'} {totalItems} {t?.organization?.pagination?.departments || 'departemen'}
+                                </div>
+                                <div className="flex items-center justify-center gap-2 w-full sm:w-auto">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                        disabled={currentPage === 1}
+                                        className="flex-1 sm:flex-none"
+                                    >
+                                        <ChevronLeft className="h-4 w-4 mr-1" />
+                                        {t?.organization?.pagination?.previous || 'Sebelumnya'}
+                                    </Button>
+                                    <div className="text-sm text-slate-600 px-3 whitespace-nowrap">
+                                        {t?.organization?.pagination?.page || 'Halaman'} {currentPage} {t?.organization?.pagination?.of || 'dari'} {totalPages}
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="flex-1 sm:flex-none"
+                                    >
+                                        {t?.organization?.pagination?.next || 'Selanjutnya'}
+                                        <ChevronRight className="h-4 w-4 ml-1" />
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </>
                 )}
             </div>

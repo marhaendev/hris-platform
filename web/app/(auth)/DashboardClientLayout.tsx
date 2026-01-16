@@ -100,7 +100,7 @@ export default function DashboardLayout({
 
 
                     {/* Content */}
-                    <main className="flex-1 h-full overflow-y-auto pt-16">
+                    <main className="flex-1 h-full overflow-y-auto pt-24 md:pt-16">
 
                         {children}
                     </main>

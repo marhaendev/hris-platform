@@ -164,6 +164,22 @@ export async function POST(request: Request) {
                 });
             }
 
+            if (body.auto_vacuum_enabled !== undefined) {
+                settingsToUpdate.push({
+                    key: 'auto_vacuum_enabled',
+                    value: body.auto_vacuum_enabled.toString(),
+                    desc: 'Status otomatisasi vacuum database'
+                });
+            }
+
+            if (body.auto_vacuum_schedule !== undefined) {
+                settingsToUpdate.push({
+                    key: 'auto_vacuum_schedule',
+                    value: body.auto_vacuum_schedule.toString(),
+                    desc: 'Jadwal cron job vacuum database'
+                });
+            }
+
             if (settingsToUpdate.length > 0) {
                 updateSetting(settingsToUpdate);
             }
@@ -172,6 +188,17 @@ export async function POST(request: Request) {
         // Verify the saved values
         const savedSettings = db.prepare("SELECT key, value FROM SystemSetting WHERE companyId = ?").all(companyId);
         console.log('[Settings API] Verification - Current DB values:', savedSettings);
+
+        // Notify Bot to Reload Scheduler
+        if (body.auto_vacuum_enabled !== undefined || body.auto_vacuum_schedule !== undefined) {
+            try {
+                // Using 127.0.0.1:3001 as Bot URL
+                fetch('http://127.0.0.1:3001/scheduler/refresh', { method: 'POST' })
+                    .catch(e => console.error('[Settings API] Failed to notify bot:', e.message));
+            } catch (e) {
+                // Ignore fetch errors
+            }
+        }
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

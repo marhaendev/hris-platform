@@ -476,21 +476,17 @@ function initDb() {
         });
     }
 
-    // Default Super Admin (Recovery Logic)
-    // Default Super Admin (Recovery Logic)
-    let admin = db.prepare('SELECT * FROM User WHERE username = ? OR id = 1').get('hasan') as any;
-    const hashedPassword = bcrypt.hashSync('909090', 10);
+    // Default Super Admin (Only create once, no update on restart)
+    const adminExists = db.prepare('SELECT COUNT(*) as count FROM User WHERE role = \'SUPERADMIN\'').get() as any;
 
-    if (!admin) {
-        // If no admin exists at all (fresh install)
+    if (adminExists.count === 0) {
+        // Only create if no SUPERADMIN exists (fresh install)
+        const hashedPassword = bcrypt.hashSync('909090', 10);
         db.prepare('INSERT INTO User (username, password, name, email, role, companyId) VALUES (?, ?, ?, ?, ?, ?)')
             .run('hasan', hashedPassword, 'hasan', 'hasanaskari.id@gmail.com', 'SUPERADMIN', 1);
         console.log(">>> [DB] Default Admin created (hasan / 909090)");
     } else {
-        // Force update existing admin/id=1 to new credentials
-        db.prepare('UPDATE User SET username = ?, password = ?, name = ?, email = ?, role = ? WHERE id = ?')
-            .run('hasan', hashedPassword, 'hasan', 'hasanaskari.id@gmail.com', 'SUPERADMIN', admin.id);
-        console.log(">>> [DB] Admin account updated/recovered (username set to 'hasan')");
+        console.log(">>> [DB] Admin already exists, skipping creation");
     }
     // --- Migrations ---
     try {
@@ -573,10 +569,19 @@ function initDb() {
         { key: 'tax_pph21_layer5', value: '35', label: 'PPh21 Lapisan 5 (> 5M)', description: 'Tarif pph21 untuk PKP di atas Rp 5.000.000.000' },
     ];
 
+    // Only seed PayrollSetting if empty
     try {
-        const insertSetting = db.prepare('INSERT OR IGNORE INTO PayrollSetting (key, value, label, description) VALUES (?, ?, ?, ?)');
-        for (const s of defaultSettings) {
-            insertSetting.run(s.key, s.value, s.label, s.description);
+        const settingCount = db.prepare('SELECT COUNT(*) as count FROM PayrollSetting').get() as any;
+
+        if (settingCount.count === 0) {
+            console.log(">>> [DB] Seeding PayrollSetting (first time)...");
+            const insertSetting = db.prepare('INSERT INTO PayrollSetting (key, value, label, description) VALUES (?, ?, ?, ?)');
+            for (const s of defaultSettings) {
+                insertSetting.run(s.key, s.value, s.label, s.description);
+            }
+            console.log(">>> [DB] PayrollSetting seeded successfully");
+        } else {
+            console.log(">>> [DB] PayrollSetting already exists, skipping seed");
         }
     } catch (e) { }
 
@@ -589,68 +594,81 @@ function initDb() {
         console.log(">>> [DB] Migration: Added multilingual columns to FAQ");
     } catch (e) { }
 
-    // Seed/Update FAQ Data
+    // Seed/Update FAQ Data (Only if empty)
     try {
-        // Clear old FAQs to ensure fresh accurate data
-        const faqCount = db.prepare("SELECT COUNT(*) as count FROM FAQ WHERE question_id IS NOT NULL").get() as any;
+        // Check if FAQ already has data
+        const faqCount = db.prepare("SELECT COUNT(*) as count FROM FAQ").get() as any;
 
-        // Only re-seed if we just migrated or if needed. Ideally we want to force update to fix overclaims.
-        // Let's force delete old non-multilingual ones or just replace all system FAQs.
-        // Simplified approach: Delete 'General' category standard FAQs and re-insert.
+        // Only seed if FAQ table is completely empty
+        if (faqCount.count === 0) {
+            console.log(">>> [DB] Seeding FAQ data (first time)...");
 
-        db.prepare("DELETE FROM FAQ WHERE category = 'General'").run();
+            const newFaqs = [
+                {
+                    q_id: "Bagaimana cara melakukan absensi?",
+                    q_en: "How do I clock in/out?",
+                    a_id: "Absensi dilakukan melalui aplikasi mobile/web dengan mengaktifkan GPS. Sistem akan mendeteksi lokasi (Geotagging) dan menghitung keterlambatan secara otomatis.",
+                    a_en: "Attendance is done via mobile/web app by enabling GPS. The system detects location (Geotagging) and calculates lateness automatically.",
+                    order: 1
+                },
+                {
+                    q_id: "Apakah perhitungan gaji sudah otomatis?",
+                    q_en: "Is payroll calculation automated?",
+                    a_id: "Ya, sistem menghitung gaji pokok, tunjangan, dan potongan secara otomatis. Hasil perhitungan dapat diekspor ke format Excel/CSV.",
+                    a_en: "Yes, the system calculates basic salary, allowances, and deductions automatically. Results can be exported to Excel/CSV.",
+                    order: 2
+                },
+                {
+                    q_id: "Bagaimana cara mengajukan cuti?",
+                    q_en: "How to apply for leave?",
+                    a_id: "Karyawan dapat mengajukan cuti melalui menu 'Cuti & Izin'. Kuota cuti akan berkurang otomatis setelah disetujui.",
+                    a_en: "Employees can apply for leave via the 'Leave & Permit' menu. Leave quota is automatically deducted upon approval.",
+                    order: 3
+                },
+                {
+                    q_id: "Apa fungsi integrasi WhatsApp?",
+                    q_en: "What is the WhatsApp integration for?",
+                    a_id: "WhatsApp digunakan untuk mengirim kode OTP saat Login, memastikan akun Anda lebih aman.",
+                    a_en: "WhatsApp is used to send OTP codes during Login, ensuring your account is more secure.",
+                    order: 4
+                },
+                {
+                    q_id: "Apakah data karyawan aman?",
+                    q_en: "Is employee data secure?",
+                    a_id: "Tentu. Data karyawan disimpan dengan enkripsi standar industri dan hanya dapat diakses oleh Admin yang berwenang.",
+                    a_en: "Absolutely. Employee data is stored with industry-standard encryption and accessible only by authorized Admins.",
+                    order: 5
+                }
+            ];
 
-        const newFaqs = [
-            {
-                q_id: "Bagaimana cara melakukan absensi?",
-                q_en: "How do I clock in/out?",
-                a_id: "Absensi dilakukan melalui aplikasi mobile/web dengan mengaktifkan GPS. Sistem akan mendeteksi lokasi (Geotagging) dan menghitung keterlambatan secara otomatis.",
-                a_en: "Attendance is done via mobile/web app by enabling GPS. The system detects location (Geotagging) and calculates lateness automatically.",
-                order: 1
-            },
-            {
-                q_id: "Apakah perhitungan gaji sudah otomatis?",
-                q_en: "Is payroll calculation automated?",
-                a_id: "Ya, sistem menghitung gaji pokok, tunjangan, dan potongan secara otomatis. Hasil perhitungan dapat diekspor ke format Excel/CSV.",
-                a_en: "Yes, the system calculates basic salary, allowances, and deductions automatically. Results can be exported to Excel/CSV.",
-                order: 2
-            },
-            {
-                q_id: "Bagaimana cara mengajukan cuti?",
-                q_en: "How to apply for leave?",
-                a_id: "Karyawan dapat mengajukan cuti melalui menu 'Cuti & Izin'. Kuota cuti akan berkurang otomatis setelah disetujui.",
-                a_en: "Employees can apply for leave via the 'Leave & Permit' menu. Leave quota is automatically deducted upon approval.",
-                order: 3
-            },
-            {
-                q_id: "Apa fungsi integrasi WhatsApp?",
-                q_en: "What is the WhatsApp integration for?",
-                a_id: "WhatsApp digunakan untuk mengirim kode OTP saat Login, memastikan akun Anda lebih aman.",
-                a_en: "WhatsApp is used to send OTP codes during Login, ensuring your account is more secure.",
-                order: 4
-            },
-            {
-                q_id: "Apakah data karyawan aman?",
-                q_en: "Is employee data secure?",
-                a_id: "Tentu. Data karyawan disimpan dengan enkripsi standar industri dan hanya dapat diakses oleh Admin yang berwenang.",
-                a_en: "Absolutely. Employee data is stored with industry-standard encryption and accessible only by authorized Admins.",
-                order: 5
+            const insertFaq = db.prepare(`
+                INSERT INTO FAQ (question, answer, question_id, question_en, answer_id, answer_en, category, display_order, is_active)
+                VALUES (?, ?, ?, ?, ?, ?, 'General', ?, 1)
+            `);
+
+            for (const f of newFaqs) {
+                // Fill default columns with ID content as fallback
+                insertFaq.run(f.q_id, f.a_id, f.q_id, f.q_en, f.a_id, f.a_en, f.order);
             }
-        ];
-
-        const insertFaq = db.prepare(`
-            INSERT INTO FAQ (question, answer, question_id, question_en, answer_id, answer_en, category, display_order, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, 'General', ?, 1)
-        `);
-
-        for (const f of newFaqs) {
-            // Fill default columns with ID content as fallback
-            insertFaq.run(f.q_id, f.a_id, f.q_id, f.q_en, f.a_id, f.a_en, f.order);
+            console.log(">>> [DB] Seeding: FAQ data inserted successfully");
+        } else {
+            console.log(">>> [DB] FAQ data already exists, skipping seed");
         }
-        console.log(">>> [DB] Seeding: Updated FAQ data");
 
     } catch (e: any) {
         console.error(">>> [DB] FAQ Seeding Error:", e.message);
+    }
+
+    // --- Data Integrity Maintenance ---
+    try {
+        console.log(">>> [DB] Maintenance: Syncing missing companyId in Attendance...");
+        db.exec(`
+            UPDATE Attendance 
+            SET companyId = (SELECT companyId FROM Employee WHERE Employee.id = Attendance.employeeId)
+            WHERE companyId IS NULL
+        `);
+    } catch (e: any) {
+        console.error(">>> [DB] Maintenance Error:", e.message);
     }
 
     console.log(">>> [DB] Database initialization complete.");

@@ -76,7 +76,7 @@ export default function NewJobPage() {
     }, [form.departmentId]);
 
     const fetchDepartments = async () => {
-        const res = await fetch('/api/departments');
+        const res = await fetch('/api/departments?all=true');
         const data = await res.json();
         setDepartments(Array.isArray(data) ? data : []);
     };

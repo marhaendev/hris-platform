@@ -23,8 +23,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
             return NextResponse.json({ error: 'Unauthorized: Different company' }, { status: 403 });
         }
 
-        if (session.role === 'ADMIN' && employee.role === 'SUPERADMIN') {
-            return NextResponse.json({ error: 'Unauthorized: Admin cannot delete Superadmin' }, { status: 403 });
+        if ((session.role === 'ADMIN' || session.role === 'COMPANY_OWNER') && employee.role === 'SUPERADMIN') {
+            return NextResponse.json({ error: 'Terlarang: Anda tidak dapat menghapus Superadmin' }, { status: 403 });
         }
 
         const deleteUser = db.prepare('DELETE FROM User WHERE id = ?');

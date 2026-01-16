@@ -24,7 +24,12 @@
         "of": "of",
         "prev": "Previous",
         "next": "Next",
-        "data": "entries"
+        "page": "Page",
+        "data": "entries",
+        "position": "Position",
+        "department": "Department",
+        "generate": "Generate",
+        "print": "Print"
     },
     "nav": {
         "dashboard": "Dashboard",
@@ -44,7 +49,8 @@
         "shifts": "Shifts & Schedule",
         "payroll": "Payroll",
         "payroll_generator": "Auto Payroll",
-        "salary_employee": "Employee Salary",
+        "payroll_dashboard": "Process Payroll",
+        "salary_employee": "Base Salary",
         "history": "History",
         "finance": "Finance",
         "settings": "Authentication",
@@ -63,7 +69,8 @@
         "master_departemen": "Departments",
         "master_bank": "Banks",
         "master_payment": "Payment Methods",
-        "companies": "Companies"
+        "companies": "Companies",
+        "org_chart": "Organization Chart"
     },
     "aboutPage": {
         "title": "About Application",
@@ -292,7 +299,83 @@
                 "title": "Statistics Not Available",
                 "desc": "Your account is registered as an employee, but employee data was not found. Contact admin to complete your profile."
             }
+        },
+        "leaveStats": {
+            "title": "Leave Statistics (This Month)",
+            "pending": "Pending Approval",
+            "pendingDesc": "Requests need review",
+            "approved": "Approved",
+            "approvedDesc": "Employees on leave this month",
+            "rejected": "Rejected",
+            "rejectedDesc": "Requests rejected this month"
+        },
+        "newEmployeeBadge": "New Employee"
+    },
+    "payrollDashboard": {
+        "title": "Payroll Dashboard",
+        "subtitle": "Manage salaries, PPh21, and employee payslips.",
+        "process": "Process Payroll",
+        "month": "Month",
+        "year": "Year",
+        "settings": "Payroll Settings",
+        "stats": {
+            "netTotal": "Total Net Payment",
+            "netDesc": "All employees' net salary",
+            "pphTotal": "Total PPh21 Payable",
+            "pphDesc": "Estimated tax this month",
+            "employeeCount": "Total Employees",
+            "employeeDesc": "Received by {count} people"
+        },
+        "historyTitle": "Payroll History",
+        "searchPlaceholder": "Search name or department...",
+        "printAll": "Print All Payslips",
+        "table": {
+            "employee": "Employee",
+            "baseSalary": "Base Salary",
+            "deductions": "Deductions",
+            "pph21": "PPh21",
+            "net": "Net",
+            "status": "Status",
+            "action": "Actions"
+        },
+        "emptyPeriod": "No data for this period.",
+        "status": {
+            "paid": "PAID",
+            "draft": "DRAFT",
+            "done": "Done",
+            "draftLower": "Draft"
+        },
+        "csvSuccess": "CSV Download successful",
+        "excelSuccess": "Excel Download successful",
+        "noDataExport": "No data to export",
+        "noDataPrint": "No data to print"
+    },
+    "payrollSalaries": {
+        "title": "Base Salary Settings",
+        "subtitle": "Set standard basic salary for each employee.",
+        "autoPayroll": "Mass Update",
+        "searchPlaceholder": "Search employee name...",
+        "allDepartments": "All Departments",
+        "allPositions": "All Positions",
+        "editTitle": "Edit Base Salary",
+        "saveSuccess": "Salary updated successfully",
+        "saveError": "Failed to update salary",
+        "autoTitle": "Mass Salary Update",
+        "autoTypeDept": "By Department",
+        "autoTypePos": "By Position",
+        "autoTargetPlaceholder": "Select target...",
+        "autoConfirm": "Update All",
+        "autoSuccess": "Mass update successful",
+        "autoError": "Failed to mass update",
+        "table": {
+            "employee": "Employee",
+            "department": "Department",
+            "position": "Position",
+            "salary": "Base Salary"
         }
+    },
+    "calendar": {
+        "today": "Today"
     },
     "user": {
         "addAccount": "Add Account",
@@ -348,6 +431,46 @@
         },
         "toast": {
             "deleteSuccess": "Employee deleted successfully!"
+        }
+    },
+    "admins": {
+        "title": "Admin Data",
+        "subtitle": "Manage company administrator accounts.",
+        "add": "Add Admin",
+        "listTitle": "Administrator List",
+        "searchPlaceholder": "Search admin...",
+        "table": {
+            "name": "Name",
+            "email": "Email",
+            "role": "Role",
+            "created": "Registered Since"
+        },
+        "empty": "No admin data yet.",
+        "noMatch": "No matching admins found.",
+        "deleteDialog": {
+            "title": "Delete Admin?",
+            "description": "This admin account will be permanently deleted and cannot login anymore.",
+            "confirm": "Yes, Delete"
+        }
+    },
+    "owners": {
+        "title": "Owner Data",
+        "subtitle": "Manage company owner accounts.",
+        "add": "Add Owner",
+        "listTitle": "Owner List",
+        "searchPlaceholder": "Search owner or company...",
+        "table": {
+            "name": "Name",
+            "contact": "Contact",
+            "company": "Company",
+            "created": "Registered Since"
+        },
+        "empty": "No owner data yet.",
+        "noMatch": "No matching owners found.",
+        "deleteDialog": {
+            "title": "Delete Owner?",
+            "description": "This owner account will be permanently deleted. Ensure the company still has access or another owner.",
+            "confirm": "Yes, Delete"
         }
     },
     "settings": {
@@ -510,7 +633,7 @@
         },
         "footer": {
             "desc": "HR management platform helping Indonesian companies grow faster with smart administration automation.",
-            "copyright": "HRIS Systems",
+            "copyright": "HRIS",
             "created_by": "Created by",
             "rights": "All rights reserved.",
             "privacy": "Privacy Policy",

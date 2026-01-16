@@ -56,6 +56,7 @@ export default function EditEmployeePage({ params }: { params: { id: string } })
     const [selectedDeptId, setSelectedDeptId] = useState<string>('');
     const [selectedPosId, setSelectedPosId] = useState<string>('');
     const [deptOpen, setDeptOpen] = useState(false);
+    const [posOpen, setPosOpen] = useState(false);
 
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
@@ -68,8 +69,8 @@ export default function EditEmployeePage({ params }: { params: { id: string } })
         const fetchData = async () => {
             try {
                 const [deptRes, posRes, empRes] = await Promise.all([
-                    fetch('/api/departments'),
-                    fetch('/api/positions'),
+                    fetch('/api/departments?all=true'),
+                    fetch('/api/positions?all=true'),
                     fetch('/api/employees')
                 ]);
 
@@ -312,23 +313,50 @@ export default function EditEmployeePage({ params }: { params: { id: string } })
 
                             <div className="space-y-2">
                                 <Label>Posisi / Jabatan {selectedDeptId && <span className="text-xs text-slate-400 font-normal">({filteredPositions.length} tersedia)</span>}</Label>
-                                <Select
-                                    value={selectedPosId}
-                                    onValueChange={setSelectedPosId}
-                                    disabled={!selectedDeptId}
-                                    required
-                                >
-                                    <SelectTrigger className="h-11">
-                                        <SelectValue placeholder={!selectedDeptId ? "Pilih Departemen Dulu" : "Pilih Posisi"} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {filteredPositions.map(pos => (
-                                            <SelectItem key={pos.id} value={pos.id.toString()}>
-                                                {pos.title} <span className="text-slate-400 text-xs ml-2">({pos.level})</span>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Popover open={posOpen} onOpenChange={setPosOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            role="combobox"
+                                            aria-expanded={posOpen}
+                                            className="w-full justify-between font-normal h-11"
+                                            disabled={!selectedDeptId}
+                                        >
+                                            {selectedPosId
+                                                ? filteredPositions.find((pos) => pos.id.toString() === selectedPosId)?.title
+                                                : (!selectedDeptId ? "Pilih Departemen Dulu" : "Pilih Posisi...")}
+                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 pointer-events-none" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[400px] p-0" align="start">
+                                        <Command>
+                                            <CommandInput placeholder="Cari posisi..." />
+                                            <CommandList>
+                                                <CommandEmpty>Posisi tidak ditemukan.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {filteredPositions.map((pos) => (
+                                                        <CommandItem
+                                                            key={pos.id}
+                                                            value={pos.title}
+                                                            onSelect={() => {
+                                                                setSelectedPosId(pos.id.toString());
+                                                                setPosOpen(false);
+                                                            }}
+                                                        >
+                                                            <Check
+                                                                className={cn(
+                                                                    "mr-2 h-4 w-4",
+                                                                    selectedPosId === pos.id.toString() ? "opacity-100" : "opacity-0"
+                                                                )}
+                                                            />
+                                                            {pos.title} <span className="text-slate-400 text-xs ml-2">({pos.level})</span>
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </div>
 
