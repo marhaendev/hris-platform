@@ -627,6 +627,7 @@ export function Sidebar({
                                     fill
                                     className="object-contain object-left"
                                     priority
+                                    unoptimized
                                 />
                             </div>
                             <Button
@@ -646,6 +647,7 @@ export function Sidebar({
                                     alt="HRIS"
                                     fill
                                     className="object-contain object-center"
+                                    unoptimized
                                 />
                             </div>
                             <Button
