@@ -139,36 +139,6 @@
                 }
             }
         },
-        "employees": {
-            "title": "Employees",
-            "subtitle": "Manage your employee data.",
-            "add": "Add Employee",
-            "searchPlaceholder": "Search name, position...",
-            "listTitle": "Employee List",
-            "status": {
-                "active": "Active"
-            },
-            "table": {
-                "name": "Name",
-                "role": "Position",
-                "salary": "Base Salary",
-                "status": "Status",
-                "actions": "Actions"
-            },
-            "actions": {
-                "detail": "Detail",
-                "delete": "Delete"
-            },
-            "empty": {
-                "noData": "No employees yet.",
-                "noMatch": "No matching employees found."
-            },
-            "deleteConfirmTitle": "Delete Employee?",
-            "deleteConfirmDesc": "This action cannot be undone. Employee data will be permanently deleted.",
-            "toast": {
-                "deleteSuccess": "Employee deleted successfully"
-            }
-        },
         "features": {
             "title": "Comprehensive Features",
             "list": {
@@ -456,6 +426,8 @@
             "noData": "No employee data yet.",
             "noMatch": "No employees found matching the search."
         },
+        "deleteConfirmTitle": "Delete Employee?",
+        "deleteConfirmDesc": "This action cannot be undone. Employee data will be permanently deleted.",
         "deleteDialog": {
             "title": "Delete Employee?",
             "description": "This employee data, including all documents and history, will be permanently deleted.",

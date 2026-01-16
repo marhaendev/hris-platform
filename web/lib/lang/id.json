@@ -139,36 +139,6 @@
                 }
             }
         },
-        "employees": {
-            "title": "Karyawan",
-            "subtitle": "Kelola data karyawan Anda.",
-            "add": "Tambah Karyawan",
-            "searchPlaceholder": "Cari nama, posisi...",
-            "listTitle": "Daftar Karyawan",
-            "status": {
-                "active": "Aktif"
-            },
-            "table": {
-                "name": "Nama",
-                "role": "Posisi",
-                "salary": "Gaji Pokok",
-                "status": "Status",
-                "actions": "Aksi"
-            },
-            "actions": {
-                "detail": "Detail",
-                "delete": "Hapus"
-            },
-            "empty": {
-                "noData": "Belum ada karyawan.",
-                "noMatch": "Tidak ditemukan karyawan yang cocok."
-            },
-            "deleteConfirmTitle": "Hapus Karyawan?",
-            "deleteConfirmDesc": "Tindakan ini tidak dapat dibatalkan. Data karyawan akan dihapus permanen.",
-            "toast": {
-                "deleteSuccess": "Data karyawan berhasil dihapus"
-            }
-        },
         "features": {
             "title": "Fitur Lengkap Aplikasi",
             "list": {
@@ -456,6 +426,8 @@
             "noData": "Belum ada data karyawan.",
             "noMatch": "Tidak ditemukan karyawan dengan kata kunci tersebut."
         },
+        "deleteConfirmTitle": "Hapus Karyawan?",
+        "deleteConfirmDesc": "Tindakan ini tidak dapat dibatalkan. Data karyawan akan dihapus permanen.",
         "deleteDialog": {
             "title": "Hapus Karyawan?",
             "description": "Data karyawan ini akan dihapus secara permanen termasuk semua dokumen dan riwayat terkait.",
