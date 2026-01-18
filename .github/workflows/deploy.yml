@@ -17,6 +17,10 @@ jobs:
         run: |
           cp /xan/hris.hasanaskari.com/.env .env
 
+      - name: Stop existing containers
+        run: |
+          docker rm -f hris-web-prod hris-bot-prod 2>/dev/null || true
+
       - name: Deploy
         run: |
           docker compose --profile production up -d --build
