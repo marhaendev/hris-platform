@@ -13,6 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Copy .env file
+        run: |
+          cp /xan/hris.hasanaskari.com/.env .env
+
       - name: Deploy
         run: |
           docker compose --profile production up -d --build
